@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #2563eb;
+  --color-primary-dark: #1d4ed8;
+  --color-bg: #f8fafc;
+  --color-surface: #ffffff;
+  --color-text: #1e293b;
+  --color-text-muted: #64748b;
+  --color-border: #e2e8f0;
+  --color-accent: #f59e0b;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* Chrome Dino game night mode — toggled on <html> by Runner.invert() */
+.inverted .runner-canvas {
+  filter: invert(1) brightness(0.85);
+}
+
+.inverted .runner-container {
+  background: #111;
+  transition: background 0.3s;
+}
+
+@media (prefers-color-scheme: dark) {
+  .inverted .runner-canvas {
+    filter: invert(0);
+  }
+  .inverted .runner-container {
+    background: #f7f7f7;
+  }
+}
