@@ -8,17 +8,15 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.9.1
-        with:
-          ssh-private-key: ${{ secrets.SERVER_SSH_KEY }}
-
       - name: Deploy
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'DEPLOY_EOF'
-          cd ~/blog
-          git pull origin main
-          docker compose down
-          docker compose up -d --build
-          docker system prune -f
-          DEPLOY_EOF
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "
+            cd ~/blog
+            git pull origin main
+            docker compose down
+            docker compose up -d --build
+            docker system prune -f
+          "
