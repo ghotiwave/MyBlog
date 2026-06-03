@@ -10,8 +10,8 @@ export function Header() {
     <header className="sticky top-0 z-50 bg-[#fefce8]/90 backdrop-blur border-b border-amber-200/60">
       <div className="max-w-5xl mx-auto flex items-center justify-between px-6 h-14">
         <div className="flex items-center gap-8">
-          <Link to="/" className="text-xl font-bold text-stone-800 hover:text-amber-700 transition-colors italic" style={{ fontFamily: 'Georgia, serif' }}>
-            MyBlog
+          <Link to="/" className="text-xl font-bold text-stone-800 hover:text-amber-700 transition-colors" style={{ fontFamily: 'Georgia, serif' }}>
+            Hety
           </Link>
           <nav className="flex items-center gap-6 text-sm">
             <Link to="/blog" className="text-stone-700 hover:text-amber-700 transition-colors font-medium">Blog</Link>

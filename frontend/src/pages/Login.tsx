@@ -21,7 +21,7 @@ export function Login() {
       await login(username, password)
       navigate('/')
     } catch {
-      setError('Invalid username or password')
+      setError('用户名或密码错误')
     } finally {
       setLoading(false)
     }
@@ -31,28 +31,17 @@ export function Login() {
     <div className="max-w-sm mx-auto pt-12">
       <Card>
         <CardContent>
-          <h1 className="text-2xl font-bold text-center mb-6">Login</h1>
+          <h1 className="text-2xl font-bold text-center mb-6 text-stone-800">登录</h1>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <Input
-              placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
-            <Input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <Input placeholder="用户名" value={username} onChange={(e) => setUsername(e.target.value)} required />
+            <Input type="password" placeholder="密码" value={password} onChange={(e) => setPassword(e.target.value)} required />
             {error && <p className="text-sm text-red-600">{error}</p>}
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Logging in...' : 'Login'}
+              {loading ? '登录中...' : '登录'}
             </Button>
           </form>
-          <p className="text-sm text-center text-gray-500 mt-4">
-            Don't have an account? <Link to="/register" className="text-blue-600 hover:underline">Register</Link>
+          <p className="text-sm text-center text-stone-400 mt-4">
+            还没有账号？ <Link to="/register" className="text-amber-700 hover:underline">注册</Link>
           </p>
         </CardContent>
       </Card>
