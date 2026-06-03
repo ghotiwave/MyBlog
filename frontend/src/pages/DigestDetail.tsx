@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
+import remarkMath from 'remark-math'
+import rehypeKatex from 'rehype-katex'
+import 'katex/dist/katex.min.css'
 import api from '@/services/api'
 import { Button } from '@/components/ui/Button'
 
@@ -39,7 +42,9 @@ export function DigestDetail() {
           {digest.topic} · {new Date(digest.created_at).toLocaleDateString('zh-CN')}
         </p>
         <div className="prose max-w-none">
-          <ReactMarkdown>{digest.content}</ReactMarkdown>
+          <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
+            {digest.content}
+          </ReactMarkdown>
         </div>
 
         {digest.source_urls && (() => {
