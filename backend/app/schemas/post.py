@@ -17,6 +17,7 @@ class PostUpdate(BaseModel):
     summary: str | None = None
     cover_image: str | None = None
     tags: str | None = None
+    post_type: str | None = None
     published: bool | None = None
 
 

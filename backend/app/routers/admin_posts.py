@@ -70,6 +70,7 @@ def get_post(post_id: int, db: Session = Depends(get_db), _: User = Depends(get_
         summary=post.summary,
         cover_image=post.cover_image,
         tags=post.tags,
+        post_type=post.post_type or "blog",
         published=post.published,
         created_at=post.created_at.isoformat() if post.created_at else "",
         updated_at=post.updated_at.isoformat() if post.updated_at else "",
@@ -82,6 +83,8 @@ def get_post(post_id: int, db: Session = Depends(get_db), _: User = Depends(get_
 @router.post("", response_model=PostResponse, status_code=201)
 def create_post(req: PostCreate, db: Session = Depends(get_db), _: User = Depends(get_current_admin)):
     post = Post(**req.model_dump())
+    if req.post_type:
+        post.post_type = req.post_type
     db.add(post)
     db.commit()
     db.refresh(post)
@@ -92,6 +95,7 @@ def create_post(req: PostCreate, db: Session = Depends(get_db), _: User = Depend
         summary=post.summary,
         cover_image=post.cover_image,
         tags=post.tags,
+        post_type=post.post_type or "blog",
         published=post.published,
         created_at=post.created_at.isoformat() if post.created_at else "",
         updated_at=post.updated_at.isoformat() if post.updated_at else "",
@@ -119,6 +123,7 @@ def update_post(post_id: int, req: PostUpdate, db: Session = Depends(get_db), _:
         summary=post.summary,
         cover_image=post.cover_image,
         tags=post.tags,
+        post_type=post.post_type or "blog",
         published=post.published,
         created_at=post.created_at.isoformat() if post.created_at else "",
         updated_at=post.updated_at.isoformat() if post.updated_at else "",
