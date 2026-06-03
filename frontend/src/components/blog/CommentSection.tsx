@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import ReactMarkdown from 'react-markdown'
+import remarkMath from 'remark-math'
+import rehypeKatex from 'rehype-katex'
 import api from '@/services/api'
 import { useAuth } from '@/contexts/AuthContext'
 import { Textarea } from '@/components/ui/Textarea'
@@ -72,7 +75,11 @@ export function CommentSection({ postId }: { postId: number }) {
                 {new Date(c.created_at).toLocaleString('zh-CN')}
               </span>
             </div>
-            <p className="text-sm text-stone-500">{c.content}</p>
+            <div className="text-sm text-stone-500 prose prose-sm max-w-none">
+              <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
+                {c.content}
+              </ReactMarkdown>
+            </div>
           </div>
         ))}
       </div>
