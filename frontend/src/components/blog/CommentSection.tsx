@@ -148,28 +148,28 @@ function CommentItem({ comment, postId, onReply, onRefresh }: {
 
           {/* Replies */}
           {showReplies && allReplies.length > 0 && (
-            <div className="mt-3 ml-4 pl-4 border-l-2 border-[var(--color-border)]/60 space-y-3">
+            <div className="mt-4 ml-6 pl-5 border-l-2 border-[var(--color-border)]/60 space-y-4">
               {allReplies.map((r) => (
                 <div key={r.id} className="flex items-start gap-3">
                   {r.avatar_url ? (
-                    <img src={r.avatar_url} alt="" className="w-7 h-7 rounded-full object-cover shrink-0" />
+                    <img src={r.avatar_url} alt="" className="w-8 h-8 rounded-full object-cover shrink-0" />
                   ) : (
-                    <div className="w-7 h-7 rounded-full bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-center text-[10px] text-[var(--color-text-muted)] shrink-0">
+                    <div className="w-8 h-8 rounded-full bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-center text-xs text-[var(--color-text-muted)] shrink-0">
                       {r.author_name[0]}
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-0.5">
-                      <span className="font-medium text-xs text-[var(--color-text)]">{r.author_name}</span>
-                      <span className="text-[10px] text-[var(--color-text-muted)]">{new Date(r.created_at).toLocaleString('zh-CN')}</span>
+                      <span className="font-medium text-sm text-[var(--color-text)]">{r.author_name}</span>
+                      <span className="text-xs text-[var(--color-text-muted)]">{new Date(r.created_at).toLocaleString('zh-CN')}</span>
                     </div>
-                    <div className="text-xs text-[var(--color-text)]">
+                    <div className="text-sm text-[var(--color-text)]">
                       {r.reply_to_name && <span className="text-[var(--color-primary)] mr-1">@ {r.reply_to_name}</span>}
                       <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
                         {r.content}
                       </ReactMarkdown>
                     </div>
-                    <button onClick={() => onReply(r.id, r.author_name)} className="text-[10px] text-[var(--color-text-muted)] hover:text-[var(--color-primary)] cursor-pointer mt-1">回复</button>
+                    <button onClick={() => onReply(r.id, r.author_name)} className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-primary)] cursor-pointer mt-1">回复</button>
                   </div>
                 </div>
               ))}
