@@ -41,9 +41,9 @@ export function PostDetail() {
       setLikeCount(res.data.like_count || 0)
     }).finally(() => setLoading(false))
 
-    // Fetch adjacent posts
+    // Fetch adjacent posts (no type filter - get all published)
     api.get('/posts', { params: { page_size: 200 } }).then((res) => {
-      const posts = res.data.items.filter((p: any) => p.post_type === 'blog')
+      const posts = res.data.items
       const idx = posts.findIndex((p: any) => p.id === Number(id))
       if (idx >= 0) {
         setAdjacent({ prev: posts[idx + 1] || null, next: posts[idx - 1] || null })

@@ -30,9 +30,9 @@ export function ArticleLayout({ content, prevPost, nextPost, children }: Props) 
       {/* Left: article navigation — hover reveal */}
       <div className="sidebar-left fixed left-0 top-1/2 -translate-y-1/2 z-50 flex" style={{ minWidth: 6 }}>
         {/* Hover strip */}
-        <div className="w-2 bg-[var(--color-primary)]/20 hover:bg-[var(--color-primary)]/50 rounded-r cursor-pointer shrink-0 transition-colors" />
+        <div className="w-2.5 bg-[var(--color-primary)]/20 hover:bg-[var(--color-primary)]/50 rounded-r cursor-pointer shrink-0 transition-colors" />
         {/* Panel */}
-        <div className="sidebar-panel bg-[var(--color-surface)] border border-[var(--color-border)] rounded-r-lg shadow-lg p-5 w-72 ml-1">
+        <div className="sidebar-panel bg-[var(--color-surface)] border border-[var(--color-border)] rounded-r-lg shadow-lg p-6 w-80 ml-1">
           <h4 className="text-sm text-[var(--color-text-muted)] tracking-wider mb-3 uppercase">导航</h4>
           <div className="space-y-3">
             {prevPost ? (
@@ -58,7 +58,7 @@ export function ArticleLayout({ content, prevPost, nextPost, children }: Props) 
       {toc.length > 0 && (
         <div className="sidebar-right fixed right-0 top-1/2 -translate-y-1/2 z-50 flex" style={{ minWidth: 6 }}>
           {/* Panel */}
-          <div className="sidebar-panel bg-[var(--color-surface)] border border-[var(--color-border)] rounded-l-lg shadow-lg p-5 w-72 mr-1" style={{ maxHeight: '65vh', overflowY: 'auto' }}>
+          <div className="sidebar-panel bg-[var(--color-surface)] border border-[var(--color-border)] rounded-l-lg shadow-lg p-6 w-80 mr-1" style={{ maxHeight: '65vh', overflowY: 'auto' }}>
             <h4 className="text-sm text-[var(--color-text-muted)] tracking-wider mb-3 uppercase">目录</h4>
             <div className="border-l-2 border-[var(--color-border)] pl-3 space-y-0.5">
               {toc.map((item) => (
@@ -74,7 +74,7 @@ export function ArticleLayout({ content, prevPost, nextPost, children }: Props) 
             </div>
           </div>
           {/* Hover strip */}
-          <div className="w-1.5 bg-[var(--color-primary)]/20 hover:bg-[var(--color-primary)]/50 rounded-l cursor-pointer shrink-0 transition-colors" />
+          <div className="w-2.5 bg-[var(--color-primary)]/20 hover:bg-[var(--color-primary)]/50 rounded-l cursor-pointer shrink-0 transition-colors" />
         </div>
       )}
     </div>

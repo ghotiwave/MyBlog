@@ -94,21 +94,23 @@ body {
 ::-webkit-scrollbar-thumb:hover { background: rgba(150,150,150,0.6); }
 
 /* === Code block depth === */
-.prose pre {
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-  border: 1px solid rgba(0,0,0,0.05);
-  transition: box-shadow 0.3s ease;
+.prose pre, .prose pre code {
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08) !important;
+  border: 1px solid rgba(0,0,0,0.06) !important;
+  transition: box-shadow 0.3s ease !important;
 }
-.prose pre:hover { box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
+.prose pre:hover, .prose pre:hover code {
+  box-shadow: 0 6px 15px rgba(0,0,0,0.12) !important;
+}
 
 /* === Image hover zoom === */
 .prose img {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border-radius: 6px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+  border-radius: 6px !important;
 }
 .prose img:hover {
-  transform: scale(1.02);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  transform: scale(1.02) !important;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15) !important;
 }
 
 /* === Sidebar hover reveal (desktop ≥1220px) === */
