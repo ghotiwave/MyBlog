@@ -81,15 +81,14 @@ export function CommentSection({ postId }: { postId: number }) {
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
                   <span className="font-medium text-sm text-stone-700">{c.author_name}</span>
-                  <span className="text-xs text-stone-300">
-                {new Date(c.created_at).toLocaleString('zh-CN')}
-              </span>
-            </div>
+                  <span className="text-xs text-stone-300">{new Date(c.created_at).toLocaleString('zh-CN')}</span>
+                </div>
               <div className="text-sm text-stone-500 prose prose-sm max-w-none">
                 <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
                   {c.content}
                 </ReactMarkdown>
               </div>
+            </div>
             </div>
           </div>
         ))}
