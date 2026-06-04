@@ -227,9 +227,7 @@ function CommentForm({ postId, placeholder, onSubmit, replyTarget, onCancelReply
         <Button type="submit" disabled={submitting}>
           {submitting ? '发送中...' : replyTarget ? '回复' : '发表评论'}
         </Button>
-        <ReactMarkdown className="text-[10px] text-[var(--color-text-muted)] self-end">
-          支持 Markdown
-        </ReactMarkdown>
+        <span className="text-[10px] text-[var(--color-text-muted)] self-end">支持 Markdown</span>
       </div>
     </form>
   )
