@@ -12,7 +12,7 @@ interface AuthState {
   token: string | null
   isAdmin: boolean
   login: (username: string, password: string) => Promise<void>
-  register: (username: string, password: string) => Promise<void>
+  register: (username: string, email: string, password: string) => Promise<any>
   logout: () => void
 }
 
@@ -36,13 +36,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(u)
   }
 
-  async function register(username: string, password: string) {
-    const res = await api.post('/auth/register', { username, password })
-    const { access_token, user: u } = res.data
+  async function register(username: string, email: string, password: string) {
+    const res = await api.post('/auth/register', { username, email, password })
+    const { access_token, user: u, verify_url } = res.data
     localStorage.setItem('token', access_token)
     localStorage.setItem('user', JSON.stringify(u))
     setToken(access_token)
     setUser(u)
+    return { verify_url }
   }
 
   function logout() {

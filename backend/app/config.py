@@ -9,6 +9,13 @@ class Settings(BaseSettings):
     DEEPSEEK_API_KEY: str = ""
     ADMIN_PASSWORD: str = "admin123"
     DEEPSEEK_BASE_URL: str = "https://api.deepseek.com"
+    # SMTP for email verification (optional)
+    SMTP_HOST: str = ""
+    SMTP_PORT: int = 587
+    SMTP_USER: str = ""
+    SMTP_PASSWORD: str = ""
+    SMTP_USE_SSL: bool = False
+    SITE_URL: str = "http://localhost:8000"
 
     model_config = {"env_file": ".env", "extra": "ignore"}
 

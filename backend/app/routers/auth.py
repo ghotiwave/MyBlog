@@ -1,4 +1,6 @@
+import secrets
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import HTMLResponse
 from sqlalchemy.orm import Session
 from jose import jwt
 from datetime import datetime, timedelta, timezone
@@ -23,32 +25,64 @@ def user_to_response(user: User) -> dict:
         "id": user.id,
         "username": user.username,
         "email": user.email,
+        "email_verified": bool(user.email_verified),
         "role": user.role,
         "created_at": user.created_at.isoformat() if user.created_at else "",
     }
 
 
-@router.post("/register", response_model=TokenResponse)
+@router.post("/register")
 def register(req: RegisterRequest, db: Session = Depends(get_db)):
     if db.query(User).filter(User.username == req.username).first():
-        raise HTTPException(status_code=400, detail="Username already taken")
+        raise HTTPException(status_code=400, detail="用户名已被注册")
+    if req.email and db.query(User).filter(User.email == req.email).first():
+        raise HTTPException(status_code=400, detail="邮箱已被注册")
+
+    verify_token = secrets.token_urlsafe(32)
     user = User(
         username=req.username,
         email=req.email,
+        verification_token=verify_token,
         password_hash=bcrypt.hashpw(req.password.encode(), bcrypt.gensalt()).decode(),
     )
     db.add(user)
     db.commit()
     db.refresh(user)
+
+    # Try to send verification email; if SMTP not configured, return the link
+    verify_url = None
+    if settings.SMTP_HOST and req.email:
+        from app.services.email_service import send_verification_email
+        sent = send_verification_email(req.email, verify_token)
+        if not sent:
+            verify_url = f"{settings.SITE_URL}/api/auth/verify/{verify_token}"
+    else:
+        verify_url = f"{settings.SITE_URL}/api/auth/verify/{verify_token}"
+
     token = create_token(user)
-    return TokenResponse(access_token=token, user=user_to_response(user))
+    resp = TokenResponse(access_token=token, user=user_to_response(user))
+    result = resp.model_dump()
+    if verify_url:
+        result["verify_url"] = verify_url
+    return result
+
+
+@router.get("/verify/{token}", response_class=HTMLResponse)
+def verify_email(token: str, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.verification_token == token).first()
+    if not user:
+        return HTMLResponse("<h2>链接无效或已过期</h2>", status_code=404)
+    user.email_verified = 1
+    user.verification_token = None
+    db.commit()
+    return HTMLResponse("<h2>邮箱验证成功！你现在可以关闭此页面。</h2>")
 
 
 @router.post("/login", response_model=TokenResponse)
 def login(req: LoginRequest, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.username == req.username).first()
     if not user or not bcrypt.checkpw(req.password.encode(), user.password_hash.encode()):
-        raise HTTPException(status_code=401, detail="Invalid username or password")
+        raise HTTPException(status_code=401, detail="用户名或密码错误")
     token = create_token(user)
     return TokenResponse(access_token=token, user=user_to_response(user))
 
