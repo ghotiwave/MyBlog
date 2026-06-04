@@ -13,8 +13,8 @@ export function Button({ variant = 'primary', size = 'md', className, ...props }
         'inline-flex items-center justify-center rounded-lg font-medium transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed',
         {
           primary: 'bg-[#8b7355] text-white hover:bg-[#6b563f]',
-          secondary: 'bg-[#f0eeea] text-[#5a5a55] hover:bg-[#e8e6e0]',
-          ghost: 'text-[#9a9996] hover:bg-[#f5f4f0]',
+          secondary: 'bg-[var(--color-surface)] text-[var(--color-text)] hover:bg-[var(--color-border)]',
+          ghost: 'text-[var(--color-text-muted)] hover:bg-[var(--color-surface)]',
           danger: 'bg-red-400 text-white hover:bg-red-500',
         }[variant],
         {

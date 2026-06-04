@@ -9,27 +9,27 @@ export function Header() {
   const navigate = useNavigate()
 
   return (
-    <header className="sticky top-0 z-50 bg-[#fafaf7]/90 backdrop-blur-sm border-b border-[#e8e6e0]/50">
+    <header className="sticky top-0 z-50 bg-[var(--color-bg)]/90 backdrop-blur-sm border-b border-[var(--color-border)]/50">
       <div className="max-w-5xl mx-auto flex items-center justify-between px-6 h-14">
         <div className="flex items-center gap-8">
-          <Link to="/" className="text-lg text-[#5a5a55] hover:text-[#8b7355] transition-colors tracking-wider">
+          <Link to="/" className="text-lg text-[var(--color-text)] hover:text-[var(--color-primary)] transition-colors tracking-wider">
             Hety
           </Link>
           <nav className="flex items-center gap-6 text-sm">
-            <Link to="/blog" className="text-[#9a9996] hover:text-[#5a5a55] transition-colors">博客</Link>
-            <a href="http://localhost:8080" className="text-[#9a9996] hover:text-[#5a5a55] transition-colors">笔记</a>
-            <Link to="/digest" className="text-[#9a9996] hover:text-[#5a5a55] transition-colors">AI 日报</Link>
-            <Link to="/about" className="text-[#9a9996] hover:text-[#5a5a55] transition-colors">关于</Link>
-            <Link to="/game" className="text-[#c5c4bf] hover:text-[#9a9996] transition-colors text-xs">Game</Link>
+            <Link to="/blog" className="text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors">博客</Link>
+            <a href="http://localhost:8080" className="text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors">笔记</a>
+            <Link to="/digest" className="text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors">AI 日报</Link>
+            <Link to="/about" className="text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors">关于</Link>
+            <Link to="/game" className="text-[var(--color-text-muted)] hover:text-[var(--color-text-muted)] transition-colors text-xs">Game</Link>
           </nav>
         </div>
         <div className="flex items-center gap-3">
-          <button onClick={toggle} className="text-lg cursor-pointer px-2 py-1 rounded hover:bg-[#f0eeea] dark:hover:bg-[#3d3d3a] transition-colors" title={dark ? '切到亮色' : '切到暗色'}>
+          <button onClick={toggle} className="text-lg cursor-pointer px-2 py-1 rounded hover:bg-[var(--color-surface)] dark:hover:bg-[#3d3d3a] transition-colors" title={dark ? '切到亮色' : '切到暗色'}>
             {dark ? '☀' : '☾'}
           </button>
           {user ? (
             <>
-              <span className="text-xs text-[#b5b4af]">{user.username}</span>
+              <span className="text-xs text-[var(--color-text-muted)]">{user.username}</span>
               <Button variant="ghost" size="sm" onClick={() => navigate('/history')}>历史</Button>
               <Button variant="ghost" size="sm" onClick={() => navigate('/likes')}>点赞</Button>
               {isAdmin && (

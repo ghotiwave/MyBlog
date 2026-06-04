@@ -14,22 +14,22 @@ export function Home() {
     <div className="min-h-[80vh] flex flex-col justify-center">
       <section className="py-24 md:py-32">
         <div className="max-w-xl">
-          <h1 className="text-3xl md:text-4xl text-[#3a3a38] leading-snug mb-8 tracking-wide font-light">
+          <h1 className="text-3xl md:text-4xl text-[var(--color-text)] leading-snug mb-8 tracking-wide font-light">
             欢迎来到
             <br />
             Hety 的个人主页
           </h1>
-          <p className="text-sm text-[#b5b4af] leading-loose max-w-md">
+          <p className="text-sm text-[var(--color-text-muted)] leading-loose max-w-md">
             技术、思考与生活。
           </p>
         </div>
       </section>
 
       {posts.length > 0 && (
-        <section className="border-t border-[#e8e6e0]/50 pt-10 pb-16">
+        <section className="border-t border-[var(--color-border)]/50 pt-10 pb-16">
           <div className="flex items-center justify-between mb-5">
-            <h2 className="text-xs text-[#c5c4bf] tracking-[0.2em]">最近</h2>
-            <Link to="/blog" className="text-xs text-[#c5c4bf] hover:text-[#8b7355] transition-colors">
+            <h2 className="text-xs text-[var(--color-text-muted)] tracking-[0.2em]">最近</h2>
+            <Link to="/blog" className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors">
               全部 &rarr;
             </Link>
           </div>
@@ -50,8 +50,8 @@ export function Home() {
         </section>
       )}
 
-      <div className="text-center py-10 border-t border-[#e8e6e0]/30 mt-auto">
-        <p className="text-xs text-[#c5c4bf]">感谢来访。</p>
+      <div className="text-center py-10 border-t border-[var(--color-border)]/30 mt-auto">
+        <p className="text-xs text-[var(--color-text-muted)]">感谢来访。</p>
       </div>
     </div>
   )

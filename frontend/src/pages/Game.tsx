@@ -24,7 +24,7 @@ export function Game() {
         )}
       </div>
 
-      <p className="text-sm text-[#b5b4af] mb-2">空格键跳跃，方向键下蹲。</p>
+      <p className="text-sm text-[var(--color-text-muted)] mb-2">空格键跳跃，方向键下蹲。</p>
 
       <div className="mb-8">
         <DinoGame />
