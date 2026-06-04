@@ -36,6 +36,7 @@ def init_db():
     from app.models.digest import NewsDigest
     from app.models.reading_history import ReadingHistory
     from app.models.like import Like
+    from app.models.comment import Comment, CommentLike
     import bcrypt
 
     Base.metadata.create_all(bind=engine)

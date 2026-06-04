@@ -3,6 +3,8 @@ from pydantic import BaseModel
 
 class CommentCreate(BaseModel):
     content: str
+    parent_id: int | None = None
+    reply_to_user_id: int | None = None
 
 
 class CommentResponse(BaseModel):
