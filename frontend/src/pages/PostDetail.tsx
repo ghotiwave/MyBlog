@@ -33,13 +33,23 @@ export function PostDetail() {
   const [showGraph, setShowGraph] = useState(false)
   const { user } = useAuth()
 
+  const [adjacent, setAdjacent] = useState<{ prev: any; next: any }>({ prev: null, next: null })
+
   useEffect(() => {
     api.get(`/posts/${id}`).then((res) => {
       setPost(res.data)
       setLikeCount(res.data.like_count || 0)
     }).finally(() => setLoading(false))
 
-    // Record view if logged in
+    // Fetch adjacent posts
+    api.get('/posts', { params: { page_size: 200 } }).then((res) => {
+      const posts = res.data.items.filter((p: any) => p.post_type === 'blog')
+      const idx = posts.findIndex((p: any) => p.id === Number(id))
+      if (idx >= 0) {
+        setAdjacent({ prev: posts[idx + 1] || null, next: posts[idx - 1] || null })
+      }
+    })
+
     if (user && id) {
       api.post(`/posts/${id}/view`).catch(() => {})
     }
@@ -65,7 +75,7 @@ export function PostDetail() {
   const timeStr = ts.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
 
   return (
-    <ArticleLayout content={post.content}>
+    <ArticleLayout content={post.content} prevPost={adjacent.prev} nextPost={adjacent.next}>
     <article className="max-w-3xl mx-auto">
       {post.cover_image && (
         <img src={post.cover_image} alt={post.title} className="w-full h-64 object-cover rounded-xl mb-6" />

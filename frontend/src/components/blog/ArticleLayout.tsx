@@ -1,4 +1,5 @@
-import { useState, useMemo, useCallback } from 'react'
+import { useState, useMemo } from 'react'
+import { Link } from 'react-router-dom'
 
 interface TOCItem { id: string; text: string; level: number }
 
@@ -9,9 +10,9 @@ interface Props {
   children: React.ReactNode
 }
 
-function extractTOC(markdown: string): TOCItem[] {
+function extractTOC(md: string): TOCItem[] {
   const items: TOCItem[] = []
-  for (const line of markdown.split('\n')) {
+  for (const line of md.split('\n')) {
     const m = line.match(/^(#{2,4})\s+(.+)/)
     if (m) {
       const text = m[2].replace(/[`*_~\[\]()#]+/g, '').trim()
@@ -22,64 +23,80 @@ function extractTOC(markdown: string): TOCItem[] {
 }
 
 export function ArticleLayout({ content, prevPost, nextPost, children }: Props) {
-  const [expanded, setExpanded] = useState<'left' | 'right' | null>(null)
+  const [showLeft, setShowLeft] = useState(false)
+  const [showRight, setShowRight] = useState(false)
   const toc = useMemo(() => extractTOC(content), [content])
-  const scrollTo = useCallback((id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }, [])
 
   return (
-    <div className="relative max-w-3xl mx-auto">
-      {/* Left sidebar */}
-      <div
-        className="fixed left-0 top-1/2 -translate-y-1/2 z-50 flex transition-transform duration-300"
-        style={{ transform: expanded === 'left' ? 'translateX(0)' : 'translateX(calc(-100% + 6px))' }}
-        onMouseEnter={() => setExpanded('left')}
-        onMouseLeave={() => setExpanded(null)}
+    <div className="flex gap-6 relative">
+      {/* Left sidebar toggle */}
+      <button
+        onClick={() => setShowLeft(!showLeft)}
+        className="fixed left-4 top-24 z-50 w-8 h-8 rounded-full bg-[var(--color-surface)] border border-[var(--color-border)] shadow text-xs text-[var(--color-text-muted)] hover:text-[var(--color-primary)] cursor-pointer transition-colors flex items-center justify-center"
+        title="文章导航"
       >
-        {/* Visible tab */}
-        <div className="w-1.5 bg-[var(--color-primary)]/30 rounded-r cursor-pointer hover:bg-[var(--color-primary)]/60 transition-colors shrink-0" />
-        {/* Content */}
-        <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-r-lg shadow-lg p-3 w-48">
-          <h4 className="text-[11px] text-[var(--color-text-muted)] tracking-wider mb-2">导航</h4>
-          {prevPost ? (
-            <a href={`/blog/${prevPost.id}`} className="block text-xs text-[var(--color-text-muted)] hover:text-[var(--color-primary)] mb-1.5 transition-colors truncate">
-              ← {prevPost.title}
-            </a>
-          ) : <p className="text-xs text-[var(--color-text-muted)] mb-1.5">—</p>}
-          {nextPost ? (
-            <a href={`/blog/${nextPost.id}`} className="block text-xs text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors truncate">
-              → {nextPost.title}
-            </a>
-          ) : <p className="text-xs text-[var(--color-text-muted)]">—</p>}
-        </div>
-      </div>
+        ←
+      </button>
+
+      {/* Left sidebar */}
+      {showLeft && (
+        <aside className="fixed left-16 top-24 z-50 w-56 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg shadow-lg p-4 animate-in fade-in slide-in-from-left-2">
+          <h4 className="text-xs text-[var(--color-text-muted)] tracking-wider mb-3">文章导航</h4>
+          <div className="space-y-3">
+            {prevPost ? (
+              <Link to={`/blog/${prevPost.id}`} className="block group" onClick={() => setShowLeft(false)}>
+                <span className="text-[10px] text-[var(--color-text-muted)]">← 上一篇</span>
+                <p className="text-sm text-[var(--color-text)] group-hover:text-[var(--color-primary)] transition-colors mt-0.5 line-clamp-2">{prevPost.title}</p>
+              </Link>
+            ) : (
+              <p className="text-xs text-[var(--color-text-muted)]">没有了</p>
+            )}
+            {nextPost ? (
+              <Link to={`/blog/${nextPost.id}`} className="block group" onClick={() => setShowLeft(false)}>
+                <span className="text-[10px] text-[var(--color-text-muted)]">下一篇 →</span>
+                <p className="text-sm text-[var(--color-text)] group-hover:text-[var(--color-primary)] transition-colors mt-0.5 line-clamp-2">{nextPost.title}</p>
+              </Link>
+            ) : (
+              <p className="text-xs text-[var(--color-text-muted)]">没有了</p>
+            )}
+          </div>
+        </aside>
+      )}
 
       {/* Main content */}
-      {children}
+      <div className="flex-1 min-w-0">{children}</div>
 
-      {/* Right sidebar - TOC */}
+      {/* Right sidebar toggle */}
       {toc.length > 0 && (
-        <div
-          className="fixed right-0 top-1/2 -translate-y-1/2 z-50 flex transition-transform duration-300"
-          style={{ transform: expanded === 'right' ? 'translateX(0)' : 'translateX(calc(100% - 6px))' }}
-          onMouseEnter={() => setExpanded('right')}
-          onMouseLeave={() => setExpanded(null)}
-        >
-          {/* Content */}
-          <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-l-lg shadow-lg p-3 w-52" style={{ maxHeight: '70vh', overflowY: 'auto' }}>
-            <h4 className="text-[11px] text-[var(--color-text-muted)] tracking-wider mb-2">目录</h4>
-            {toc.map((item) => (
-              <div key={item.id} onClick={() => scrollTo(item.id)}
-                className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-primary)] cursor-pointer transition-colors truncate block py-0.5"
-                style={{ paddingLeft: (item.level - 2) * 12 }}>
-                {item.text}
+        <>
+          <button
+            onClick={() => setShowRight(!showRight)}
+            className="fixed right-4 top-24 z-50 w-8 h-8 rounded-full bg-[var(--color-surface)] border border-[var(--color-border)] shadow text-xs text-[var(--color-text-muted)] hover:text-[var(--color-primary)] cursor-pointer transition-colors flex items-center justify-center"
+            title="目录"
+          >
+            ☰
+          </button>
+
+          {showRight && (
+            <aside className="fixed right-16 top-24 z-50 w-56 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg shadow-lg p-4 animate-in fade-in slide-in-from-right-2" style={{ maxHeight: '70vh', overflowY: 'auto' }}>
+              <h4 className="text-xs text-[var(--color-text-muted)] tracking-wider mb-3">目录</h4>
+              <div className="border-l-2 border-[var(--color-border)] pl-3 space-y-1">
+                {toc.map((item) => (
+                  <div
+                    key={item.id}
+                    onClick={() => {
+                      document.getElementById(item.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                    }}
+                    className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-primary)] cursor-pointer transition-colors truncate block py-0.5"
+                    style={{ paddingLeft: (item.level - 2) * 10 }}
+                  >
+                    {item.text}
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-          {/* Visible tab */}
-          <div className="w-1.5 bg-[var(--color-primary)]/30 rounded-l cursor-pointer hover:bg-[var(--color-primary)]/60 transition-colors shrink-0" />
-        </div>
+            </aside>
+          )}
+        </>
       )}
     </div>
   )
