@@ -10,13 +10,21 @@ interface Props {
   children: React.ReactNode
 }
 
+function slugId(text: string): string {
+  return text
+    .replace(/[^\w\s一-鿿-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+    .toLowerCase()
+}
+
 function extractTOC(md: string): TOCItem[] {
   const items: TOCItem[] = []
   for (const line of md.split('\n')) {
     const m = line.match(/^(#{2,4})\s+(.+)/)
     if (m) {
       const text = m[2].replace(/[`*_~\[\]()#]+/g, '').trim()
-      items.push({ id: text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w一-鿿-]/g, ''), text, level: m[1].length })
+      items.push({ id: slugId(text), text, level: m[1].length })
     }
   }
   return items

@@ -16,6 +16,14 @@ interface Digest {
 interface NewsItem { title: string; desc: string; sourceUrl: string; sourceLabel: string }
 interface SectionBlock { heading: string; subBlocks: { subheading: string; items: NewsItem[] }[] }
 
+function slugId(text: string): string {
+  return text
+    .replace(/[^\w\s一-鿿-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+    .toLowerCase()
+}
+
 /** Parse `- **title**: desc  \n> 原文：[label](url)` patterns into NewsItem[] */
 function parseItems(body: string): NewsItem[] {
   const items: NewsItem[] = []
@@ -195,7 +203,7 @@ export function DigestDetail() {
         {/* Spotlight — 3-col grid */}
         {spotlightItems.length > 0 && (
           <section className="mb-8 p-6 md:p-8 border border-[var(--color-border)] rounded-xl bg-[var(--color-surface)]/60">
-            <h2 id="今日特别关注" className="text-lg font-bold text-[var(--color-text)] mb-5 pb-3 border-b border-[var(--color-border)]">
+            <h2 id={slugId("🔥 今日特别关注")} className="text-lg font-bold text-[var(--color-text)] mb-5 pb-3 border-b border-[var(--color-border)]">
               🔥 今日特别关注
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6 items-stretch">
@@ -213,7 +221,7 @@ export function DigestDetail() {
               key={si}
               className="p-6 md:p-8 border border-[var(--color-border)] rounded-xl bg-[var(--color-surface)]/60"
             >
-              <h2 id={sec.heading.replace(/[🔥🆕📊📈💡🛠️🤖📰🌐]/g, '').trim()} className="text-lg font-bold text-[var(--color-text)] mb-5 pb-3 border-b border-[var(--color-border)]">
+              <h2 id={slugId(sec.heading)} className="text-lg font-bold text-[var(--color-text)] mb-5 pb-3 border-b border-[var(--color-border)]">
                 {sec.heading}
               </h2>
               {sec.subBlocks.map((sub, sbi) => (
