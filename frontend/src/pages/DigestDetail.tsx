@@ -23,12 +23,12 @@ function parseItems(body: string): NewsItem[] {
   let i = 0
   while (i < lines.length) {
     const line = lines[i]
-    const m = line.match(/^-\s+\*?\*?(.+?)\*?\*?\s*[：:]\s*(.+)/)
+    // Match various formats: - **title**: desc  or  - title：desc  or  - **title**：desc
+    const m = line.match(/^-\s+(?:\*\*?)?(.+?)(?:\*\*?)?\s*[：:]\s*(.+)/)
     if (m) {
-      const title = m[1].trim()
+      const title = m[1].replace(/\*+/g, '').trim()
       const desc = m[2].trim()
       let sourceUrl = ''; let sourceLabel = ''
-      // Look ahead for source link
       if (i + 1 < lines.length) {
         const sm = lines[i + 1].match(/^>\s*(?:原文|来源)[：:]\s*\[(.+?)\]\((.+?)\)/)
         if (sm) { sourceLabel = sm[1]; sourceUrl = sm[2]; i++ }
