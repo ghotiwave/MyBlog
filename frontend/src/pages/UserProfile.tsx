@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
 import api from '@/services/api'
 import { useAuth } from '@/contexts/AuthContext'
+import ReactMarkdown from 'react-markdown'
+import remarkMath from 'remark-math'
+import rehypeKatex from 'rehype-katex'
 import { Input } from '@/components/ui/Input'
 import { Textarea } from '@/components/ui/Textarea'
 import { Button } from '@/components/ui/Button'
@@ -75,13 +78,23 @@ export function UserProfile() {
         <div>
           <label className="text-xs text-[var(--color-text-muted)] tracking-wider mb-2 block">个性签名</label>
           <Textarea
-            placeholder="写一句话介绍自己..."
+            placeholder="写一句话介绍自己...（支持 Markdown）"
             value={signature}
             onChange={(e) => setSignature(e.target.value)}
             className="min-h-[80px]"
             maxLength={200}
           />
-          <p className="text-[10px] text-[var(--color-text-muted)] text-right mt-1">{signature.length}/200</p>
+          <p className="text-[10px] text-[var(--color-text-muted)] mt-1 flex justify-between">
+            <span>支持 Markdown / 表情</span>
+            <span>{signature.length}/200</span>
+          </p>
+          {signature && (
+            <div className="mt-2 p-3 rounded-lg border border-[var(--color-border)]/50 bg-[var(--color-surface)]/30 text-sm text-[var(--color-text)] prose max-w-none prose-a:text-[var(--color-primary)]">
+              <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
+                {signature}
+              </ReactMarkdown>
+            </div>
+          )}
         </div>
 
         {msg && <p className="text-sm text-green-600">{msg}</p>}
