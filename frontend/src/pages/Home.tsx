@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import api from '@/services/api'
 import { PostCard } from '@/components/blog/PostCard'
+import logoImg from '@/assets/logo.png'
 
 export function Home() {
   const [posts, setPosts] = useState<any[]>([])
@@ -14,6 +15,7 @@ export function Home() {
     <div className="min-h-[80vh] flex flex-col justify-center">
       <section className="py-24 md:py-32">
         <div className="max-w-xl">
+          <img src={logoImg} alt="Hety" className="w-20 h-20 object-contain mb-6 rounded-xl" />
           <h1 className="text-3xl md:text-4xl text-[var(--color-text)] leading-snug mb-8 tracking-wide font-light">
             欢迎来到
             <br />

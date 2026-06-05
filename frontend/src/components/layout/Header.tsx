@@ -2,6 +2,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import { useTheme } from '@/contexts/ThemeContext'
 import { Button } from '@/components/ui/Button'
+import logoImg from '@/assets/logo-sm.png'
 
 export function Header() {
   const { user, isAdmin, logout } = useAuth()
@@ -12,8 +13,9 @@ export function Header() {
     <header className="sticky top-0 z-50 bg-[var(--color-bg)]/90 backdrop-blur-sm border-b border-[var(--color-border)]/50">
       <div className="max-w-5xl mx-auto flex items-center justify-between px-6 h-14">
         <div className="flex items-center gap-8">
-          <Link to="/" className="text-lg text-[var(--color-text)] hover:text-[var(--color-primary)] transition-colors tracking-wider">
-            Hety
+          <Link to="/" className="flex items-center gap-1 hover:opacity-80 transition-opacity">
+            <img src={logoImg} alt="Hety" className="h-7 w-auto object-contain" />
+            <span className="text-sm text-[var(--color-text)] tracking-wider">Hety</span>
           </Link>
           <nav className="flex items-center gap-6 text-sm">
             <Link to="/blog" className="text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors">博客</Link>
