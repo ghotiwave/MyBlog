@@ -7,6 +7,7 @@ import api from '@/services/api'
 import { useAuth } from '@/contexts/AuthContext'
 import { Textarea } from '@/components/ui/Textarea'
 import { Button } from '@/components/ui/Button'
+import { EmojiPicker } from '@/components/blog/EmojiPicker'
 
 interface Comment {
   id: number
@@ -128,7 +129,7 @@ function CommentItem({ comment, postId, onReply, onRefresh }: {
             {comment.reply_to_name && (
               <span className="text-[var(--color-primary)] mr-1">回复 @{comment.reply_to_name}:</span>
             )}
-            <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
+            <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]} allowedElements={['strong','a','code','em','p','img','ul','ol','li','blockquote','pre','h3','h4']}>
               {comment.content}
             </ReactMarkdown>
           </div>
@@ -190,6 +191,44 @@ function CommentForm({ postId, placeholder, onSubmit, replyTarget, onCancelReply
 }) {
   const [content, setContent] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const [imageUploading, setImageUploading] = useState(false)
+  const textareaId = `comment-textarea-${postId}`
+
+  const insertAtCursor = (text: string) => {
+    const el = document.getElementById(textareaId) as HTMLTextAreaElement | null
+    if (el) {
+      const start = el.selectionStart ?? content.length
+      const end = el.selectionEnd ?? content.length
+      const next = content.slice(0, start) + text + content.slice(end)
+      setContent(next)
+      requestAnimationFrame(() => {
+        el.focus()
+        el.setSelectionRange(start + text.length, start + text.length)
+      })
+    } else {
+      setContent((prev) => prev + text)
+    }
+  }
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setImageUploading(true)
+    const form = new FormData()
+    form.append('file', file)
+    try {
+      const token = localStorage.getItem('token')
+      const res = await fetch('/api/admin/upload', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: form,
+      })
+      const data = await res.json()
+      if (data.url) insertAtCursor(`![](${data.url})`)
+    } finally {
+      setImageUploading(false)
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -218,16 +257,22 @@ function CommentForm({ postId, placeholder, onSubmit, replyTarget, onCancelReply
         </div>
       )}
       <Textarea
+        id={textareaId}
         placeholder={replyTarget ? `回复 @${replyTarget.name}...` : placeholder}
         value={content}
         onChange={(e) => setContent(e.target.value)}
         required
       />
-      <div className="flex gap-2">
+      <div className="flex items-center gap-2">
         <Button type="submit" disabled={submitting}>
           {submitting ? '发送中...' : replyTarget ? '回复' : '发表评论'}
         </Button>
-        <span className="text-[10px] text-[var(--color-text-muted)] self-end">支持 Markdown</span>
+        <EmojiPicker onSelect={(text) => insertAtCursor(text)} />
+        <label className={`px-2 py-1.5 text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)] cursor-pointer transition-colors ${imageUploading ? 'opacity-50' : ''}`}>
+          {imageUploading ? '⏳' : '🖼️'}
+          <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+        </label>
+        <span className="text-[10px] text-[var(--color-text-muted)]">支持 Markdown / 图片 / 表情</span>
       </div>
     </form>
   )

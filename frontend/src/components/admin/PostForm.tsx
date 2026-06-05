@@ -4,6 +4,7 @@ import api from '@/services/api'
 import { Input } from '@/components/ui/Input'
 import { Textarea } from '@/components/ui/Textarea'
 import { Button } from '@/components/ui/Button'
+import { EmojiPicker } from '@/components/blog/EmojiPicker'
 
 interface Props {
   post?: {
@@ -28,6 +29,7 @@ export function PostForm({ post }: Props) {
   const [published, setPublished] = useState(post?.published ?? false)
   const [saving, setSaving] = useState(false)
   const [imageUploading, setImageUploading] = useState(false)
+  const [contentImageUploading, setContentImageUploading] = useState(false)
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -113,8 +115,45 @@ export function PostForm({ post }: Props) {
         value={content}
         onChange={(e) => setContent(e.target.value)}
         className="min-h-[300px]"
+        id="post-content-textarea"
         required
       />
+      <div className="flex items-center gap-3 text-xs text-[var(--color-text-muted)]">
+        <EmojiPicker onSelect={(text) => {
+          const el = document.getElementById('post-content-textarea') as HTMLTextAreaElement | null
+          if (el) {
+            const s = el.selectionStart; const e = el.selectionEnd
+            setContent(content.slice(0, s) + text + content.slice(e))
+            requestAnimationFrame(() => { el.focus(); el.setSelectionRange(s + text.length, s + text.length) })
+          } else {
+            setContent((prev) => prev + text)
+          }
+        }} />
+        <label className={`cursor-pointer hover:text-[var(--color-primary)] transition-colors ${contentImageUploading ? 'opacity-50' : ''}`}>
+          {contentImageUploading ? '⏳ 上传中...' : '🖼️ 插入图片'}
+          <input type="file" accept="image/*" onChange={async (e) => {
+            const file = e.target.files?.[0]; if (!file) return
+            setContentImageUploading(true)
+            const form = new FormData(); form.append('file', file)
+            try {
+              const token = localStorage.getItem('token')
+              const res = await fetch('/api/admin/upload', { method: 'POST', headers: { Authorization: `Bearer ${token}` }, body: form })
+              const data = await res.json()
+              if (data.url) {
+                const el = document.getElementById('post-content-textarea') as HTMLTextAreaElement | null
+                const md = `![](${data.url})`
+                if (el) {
+                  const s = el.selectionStart; const e = el.selectionEnd
+                  setContent(content.slice(0, s) + md + content.slice(e))
+                } else {
+                  setContent((prev) => prev + '\n' + md + '\n')
+                }
+              }
+            } finally { setContentImageUploading(false) }
+          }} className="hidden" />
+        </label>
+        <span>支持 Markdown / 图片 / 表情</span>
+      </div>
       <label className="flex items-center gap-2 text-sm">
         <input
           type="checkbox"
