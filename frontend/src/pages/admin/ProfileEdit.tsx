@@ -1,4 +1,7 @@
 import { useState, useEffect } from 'react'
+import ReactMarkdown from 'react-markdown'
+import remarkMath from 'remark-math'
+import rehypeKatex from 'rehype-katex'
 import api from '@/services/api'
 import { Input } from '@/components/ui/Input'
 import { Textarea } from '@/components/ui/Textarea'
@@ -40,9 +43,19 @@ export function ProfileEdit() {
       <h1 className="text-2xl font-bold text-gray-900 mb-6">Edit Profile</h1>
       <form onSubmit={handleSubmit} className="max-w-xl space-y-4">
         <Input placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
-        <Textarea placeholder="Bio" value={bio} onChange={(e) => setBio(e.target.value)} className="min-h-[100px]" />
+        <Textarea placeholder="Bio（支持 Markdown）" value={bio} onChange={(e) => setBio(e.target.value)} className="min-h-[100px]" />
+        {bio && (
+          <div className="p-3 rounded border border-[var(--color-border)]/50 bg-[var(--color-surface)]/30 text-sm prose max-w-none prose-a:text-[var(--color-primary)]">
+            <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>{bio}</ReactMarkdown>
+          </div>
+        )}
         <Input placeholder="Interests (comma-separated)" value={interests} onChange={(e) => setInterests(e.target.value)} />
-        <Textarea placeholder="Experience" value={experience} onChange={(e) => setExperience(e.target.value)} className="min-h-[100px]" />
+        <Textarea placeholder="Experience（支持 Markdown）" value={experience} onChange={(e) => setExperience(e.target.value)} className="min-h-[100px]" />
+        {experience && (
+          <div className="p-3 rounded border border-[var(--color-border)]/50 bg-[var(--color-surface)]/30 text-sm prose max-w-none prose-a:text-[var(--color-primary)]">
+            <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>{experience}</ReactMarkdown>
+          </div>
+        )}
         <Input placeholder="GitHub URL" value={githubUrl} onChange={(e) => setGithubUrl(e.target.value)} />
         <Input placeholder="Twitter URL" value={twitterUrl} onChange={(e) => setTwitterUrl(e.target.value)} />
         <div className="flex items-center gap-3">

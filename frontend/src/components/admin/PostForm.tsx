@@ -1,5 +1,9 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import ReactMarkdown from 'react-markdown'
+import remarkMath from 'remark-math'
+import rehypeKatex from 'rehype-katex'
+import rehypeSlug from 'rehype-slug'
 import api from '@/services/api'
 import { Input } from '@/components/ui/Input'
 import { Textarea } from '@/components/ui/Textarea'
@@ -30,6 +34,7 @@ export function PostForm({ post }: Props) {
   const [saving, setSaving] = useState(false)
   const [imageUploading, setImageUploading] = useState(false)
   const [contentImageUploading, setContentImageUploading] = useState(false)
+  const [preview, setPreview] = useState(false)
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -110,49 +115,75 @@ export function PostForm({ post }: Props) {
           <img src={coverImage} alt="preview" className="mt-2 h-24 rounded object-cover" />
         )}
       </div>
-      <Textarea
-        placeholder="Content (Markdown supported)"
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        className="min-h-[300px]"
-        id="post-content-textarea"
-        required
-      />
-      <div className="flex items-center gap-3 text-xs text-[var(--color-text-muted)]">
-        <EmojiPicker onSelect={(text) => {
-          const el = document.getElementById('post-content-textarea') as HTMLTextAreaElement | null
-          if (el) {
-            const s = el.selectionStart; const e = el.selectionEnd
-            setContent(content.slice(0, s) + text + content.slice(e))
-            requestAnimationFrame(() => { el.focus(); el.setSelectionRange(s + text.length, s + text.length) })
-          } else {
-            setContent((prev) => prev + text)
-          }
-        }} />
-        <label className={`cursor-pointer hover:text-[var(--color-primary)] transition-colors ${contentImageUploading ? 'opacity-50' : ''}`}>
-          {contentImageUploading ? '⏳ 上传中...' : '🖼️ 插入图片'}
-          <input type="file" accept="image/*" onChange={async (e) => {
-            const file = e.target.files?.[0]; if (!file) return
-            setContentImageUploading(true)
-            const form = new FormData(); form.append('file', file)
-            try {
-              const token = localStorage.getItem('token')
-              const res = await fetch('/api/admin/upload', { method: 'POST', headers: { Authorization: `Bearer ${token}` }, body: form })
-              const data = await res.json()
-              if (data.url) {
+      <div>
+        <div className="flex items-center justify-between mb-1">
+          <label className="text-sm font-medium text-gray-700">Content</label>
+          <button
+            type="button"
+            onClick={() => setPreview(!preview)}
+            className={`text-xs px-3 py-1 rounded cursor-pointer transition-colors ${preview ? 'bg-[var(--color-primary)] text-white' : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)] border border-[var(--color-border)]'}`}
+          >
+            {preview ? '✏️ 编辑' : '👁 预览'}
+          </button>
+        </div>
+        {preview ? (
+          <div className="min-h-[300px] p-4 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)]/30 prose max-w-none prose-a:text-[var(--color-primary)]">
+            {content ? (
+              <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex, rehypeSlug]}>
+                {content}
+              </ReactMarkdown>
+            ) : (
+              <p className="text-[var(--color-text-muted)] text-sm italic">暂无内容</p>
+            )}
+          </div>
+        ) : (
+          <>
+            <Textarea
+              placeholder="Content (Markdown supported)"
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              className="min-h-[300px]"
+              id="post-content-textarea"
+              required
+            />
+            <div className="flex items-center gap-3 text-xs text-[var(--color-text-muted)] mt-2">
+              <EmojiPicker onSelect={(text) => {
                 const el = document.getElementById('post-content-textarea') as HTMLTextAreaElement | null
-                const md = `![](${data.url})`
                 if (el) {
                   const s = el.selectionStart; const e = el.selectionEnd
-                  setContent(content.slice(0, s) + md + content.slice(e))
+                  setContent(content.slice(0, s) + text + content.slice(e))
+                  requestAnimationFrame(() => { el.focus(); el.setSelectionRange(s + text.length, s + text.length) })
                 } else {
-                  setContent((prev) => prev + '\n' + md + '\n')
+                  setContent((prev) => prev + text)
                 }
-              }
-            } finally { setContentImageUploading(false) }
-          }} className="hidden" />
-        </label>
-        <span>支持 Markdown / 图片 / 表情</span>
+              }} />
+              <label className={`cursor-pointer hover:text-[var(--color-primary)] transition-colors ${contentImageUploading ? 'opacity-50' : ''}`}>
+                {contentImageUploading ? '⏳ 上传中...' : '🖼️ 插入图片'}
+                <input type="file" accept="image/*" onChange={async (e) => {
+                  const file = e.target.files?.[0]; if (!file) return
+                  setContentImageUploading(true)
+                  const form = new FormData(); form.append('file', file)
+                  try {
+                    const token = localStorage.getItem('token')
+                    const res = await fetch('/api/admin/upload', { method: 'POST', headers: { Authorization: `Bearer ${token}` }, body: form })
+                    const data = await res.json()
+                    if (data.url) {
+                      const el = document.getElementById('post-content-textarea') as HTMLTextAreaElement | null
+                      const md = `![](${data.url})`
+                      if (el) {
+                        const s = el.selectionStart; const e = el.selectionEnd
+                        setContent(content.slice(0, s) + md + content.slice(e))
+                      } else {
+                        setContent((prev) => prev + '\n' + md + '\n')
+                      }
+                    }
+                  } finally { setContentImageUploading(false) }
+                }} className="hidden" />
+              </label>
+              <span>支持 Markdown / 图片 / 表情</span>
+            </div>
+          </>
+        )}
       </div>
       <label className="flex items-center gap-2 text-sm">
         <input

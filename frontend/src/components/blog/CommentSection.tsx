@@ -192,6 +192,7 @@ function CommentForm({ postId, placeholder, onSubmit, replyTarget, onCancelReply
   const [content, setContent] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [imageUploading, setImageUploading] = useState(false)
+  const [preview, setPreview] = useState(false)
   const textareaId = `comment-textarea-${postId}`
 
   const insertAtCursor = (text: string) => {
@@ -256,13 +257,25 @@ function CommentForm({ postId, placeholder, onSubmit, replyTarget, onCancelReply
           <button type="button" onClick={onCancelReply} className="text-[var(--color-primary)] cursor-pointer">取消</button>
         </div>
       )}
-      <Textarea
-        id={textareaId}
-        placeholder={replyTarget ? `回复 @${replyTarget.name}...` : placeholder}
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        required
-      />
+      {preview ? (
+        <div className="min-h-[100px] p-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)]/30 text-sm prose max-w-none prose-a:text-[var(--color-primary)]">
+          {content ? (
+            <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]} allowedElements={['strong','a','code','em','p','img','ul','ol','li','blockquote','pre','h3','h4']}>
+              {content}
+            </ReactMarkdown>
+          ) : (
+            <p className="text-[var(--color-text-muted)] italic text-xs">暂无内容</p>
+          )}
+        </div>
+      ) : (
+        <Textarea
+          id={textareaId}
+          placeholder={replyTarget ? `回复 @${replyTarget.name}...` : placeholder}
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          required
+        />
+      )}
       <div className="flex items-center gap-2">
         <Button type="submit" disabled={submitting}>
           {submitting ? '发送中...' : replyTarget ? '回复' : '发表评论'}
@@ -272,6 +285,13 @@ function CommentForm({ postId, placeholder, onSubmit, replyTarget, onCancelReply
           {imageUploading ? '⏳' : '🖼️'}
           <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
         </label>
+        <button
+          type="button"
+          onClick={() => setPreview(!preview)}
+          className={`text-[10px] px-2 py-1 rounded cursor-pointer transition-colors ${preview ? 'bg-[var(--color-primary)] text-white' : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)] border border-[var(--color-border)]'}`}
+        >
+          {preview ? '编辑' : '预览'}
+        </button>
         <span className="text-[10px] text-[var(--color-text-muted)]">支持 Markdown / 图片 / 表情</span>
       </div>
     </form>
