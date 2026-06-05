@@ -79,7 +79,7 @@ function NewsCard({ item, onClick }: { item: NewsItem; onClick: () => void }) {
   return (
     <div
       onClick={onClick}
-      className="h-full flex flex-col p-4 rounded-lg border border-[var(--color-border)]/40 bg-[var(--color-bg)]/40 transition-colors hover:border-[var(--color-primary)]/30 cursor-pointer"
+      className="h-full flex flex-col p-4 rounded-lg border border-[var(--color-border)]/60 bg-[var(--color-bg)] shadow-sm transition-colors hover:border-[var(--color-primary)]/40 hover:shadow-md cursor-pointer"
     >
       <div className="flex-1">
         <div className="text-sm font-semibold text-[var(--color-text)] mb-1.5 leading-snug prose-a:text-[var(--color-primary)] [&_strong]:text-[var(--color-text)]">
@@ -194,7 +194,7 @@ export function DigestDetail() {
 
         {/* Spotlight — 3-col grid */}
         {spotlightItems.length > 0 && (
-          <section className="mb-8 p-6 md:p-8 border border-[var(--color-border)] rounded-xl bg-[var(--color-surface)]/30">
+          <section className="mb-8 p-6 md:p-8 border border-[var(--color-border)] rounded-xl bg-[var(--color-surface)]/60">
             <h2 id="今日特别关注" className="text-lg font-bold text-[var(--color-text)] mb-5 pb-3 border-b border-[var(--color-border)]">
               🔥 今日特别关注
             </h2>
@@ -211,7 +211,7 @@ export function DigestDetail() {
           {sectionBlocks.map((sec, si) => (
             <section
               key={si}
-              className="p-6 md:p-8 border border-[var(--color-border)] rounded-xl bg-[var(--color-surface)]/30"
+              className="p-6 md:p-8 border border-[var(--color-border)] rounded-xl bg-[var(--color-surface)]/60"
             >
               <h2 id={sec.heading.replace(/[🔥🆕📊📈💡🛠️🤖📰🌐]/g, '').trim()} className="text-lg font-bold text-[var(--color-text)] mb-5 pb-3 border-b border-[var(--color-border)]">
                 {sec.heading}
