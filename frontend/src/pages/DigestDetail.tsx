@@ -30,7 +30,7 @@ function parseItems(body: string): NewsItem[] {
       const desc = m[2].trim()
       let sourceUrl = ''; let sourceLabel = ''
       if (i + 1 < lines.length) {
-        const sm = lines[i + 1].match(/^>\s*(?:原文|来源)[：:]\s*\[(.+?)\]\((.+?)\)/)
+        const sm = lines[i + 1].match(/^\s*>\s*(?:原文|来源|查看原文|原文链接)[：:]\s*\[(.+?)\]\((.+?)\)/)
         if (sm) { sourceLabel = sm[1]; sourceUrl = sm[2]; i++ }
       }
       items.push({ title, desc, sourceUrl, sourceLabel })
@@ -90,7 +90,7 @@ function NewsCard({ item }: { item: NewsItem }) {
       </div>
       {item.sourceUrl && (
         <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer"
-          className="inline-block text-[10px] px-2 py-0.5 rounded-full bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text-muted)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-colors truncate max-w-full"
+          className="inline-block text-xs px-2.5 py-1 rounded-full bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/30 text-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white transition-colors truncate max-w-full"
         >
           {item.sourceLabel}
         </a>
@@ -167,7 +167,7 @@ export function DigestDetail() {
               {sec.subBlocks.map((sub, sbi) => (
                 <div key={sbi} className={sbi > 0 ? 'mt-6' : ''}>
                   {sub.subheading && (
-                    <h3 className="text-sm font-semibold text-[var(--color-text-muted)] mb-3 tracking-wide">
+                    <h3 className="text-sm font-bold text-[var(--color-text)] mb-3 tracking-wide">
                       {sub.subheading}
                     </h3>
                   )}
