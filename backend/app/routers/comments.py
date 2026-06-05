@@ -118,18 +118,19 @@ def create_comment(
     if not req.content.strip():
         raise HTTPException(status_code=422, detail="Content required")
 
-    # Validate parent and reply_to
+    # Validate parent and reply_to — derive reply_to_user_id from parent comment
     parent_id = None
     reply_to_user_id = None
     if req.parent_id:
         parent = db.query(Comment).filter(Comment.id == req.parent_id, Comment.post_id == post_id).first()
         if not parent:
             raise HTTPException(status_code=404, detail="Parent comment not found")
-        parent_id = parent.id
-        reply_to_user_id = req.reply_to_user_id
+        reply_to_user_id = parent.user_id
         # If replying to a reply, parent is the root
         if parent.parent_id:
             parent_id = parent.parent_id
+        else:
+            parent_id = parent.id
 
     comment = Comment(
         post_id=post_id,
