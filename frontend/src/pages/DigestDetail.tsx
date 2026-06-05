@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
 import remarkMath from 'remark-math'
@@ -14,6 +14,26 @@ interface Digest {
   source_urls: string | null; created_at: string
 }
 
+/** Split markdown into spotlight section + remaining sections */
+function parseSections(md: string): { spotlight: string; sections: string[] } {
+  const blocks = md.split(/\n(?=## )/).filter((b) => b.trim())
+  let spotlight = ''
+  const others: string[] = []
+  for (const b of blocks) {
+    if (b.match(/^##\s*[🔥🆕🔴].*(今日|特别|关注|重点|头条)/) || b.match(/特别关注/)) {
+      spotlight = b
+    } else if (b.startsWith('## ')) {
+      others.push(b)
+    }
+  }
+  // If no spotlight found, take the first block
+  if (!spotlight && blocks.length > 0 && !blocks[0].startsWith('# ')) {
+    spotlight = blocks[0]
+    return { spotlight: '', sections: blocks }
+  }
+  return { spotlight, sections: others }
+}
+
 export function DigestDetail() {
   const { id } = useParams<{ id: string }>()
   const [digest, setDigest] = useState<Digest | null>(null)
@@ -22,6 +42,11 @@ export function DigestDetail() {
   useEffect(() => {
     api.get(`/digests/${id}`).then((res) => setDigest(res.data)).finally(() => setLoading(false))
   }, [id])
+
+  const { spotlight, sections } = useMemo(
+    () => (digest ? parseSections(digest.content) : { spotlight: '', sections: [] as string[] }),
+    [digest],
+  )
 
   if (loading) return <div className="text-center text-[var(--color-text-muted)] py-12">加载中...</div>
   if (!digest) return <div className="text-center text-[var(--color-text-muted)] py-12">日报未找到。</div>
@@ -34,43 +59,72 @@ export function DigestDetail() {
         </Link>
 
         {/* Masthead */}
-        <header className="mb-8 pb-4 border-b-2 border-[var(--color-text)]">
+        <header className="mb-10 pb-4 border-b-2 border-[var(--color-text)]">
           <h1 className="text-2xl text-[var(--color-text)] font-bold tracking-tight mb-1">{digest.title}</h1>
-          <div className="flex items-center gap-2 text-xs text-[var(--color-text-muted)]">
-            <span>{new Date(digest.created_at).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
-          </div>
+          <p className="text-xs text-[var(--color-text-muted)]">
+            {new Date(digest.created_at).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}
+          </p>
         </header>
 
-        {/* Newspaper columns on desktop */}
-        <div className="prose max-w-none
-          columns-1 md:columns-2 lg:columns-3
-          gap-6 lg:gap-8
-          [&>h2]:column-span-all
-          [&>h2]:text-lg [&>h2]:font-bold [&>h2]:mt-0 [&>h2]:mb-4 [&>h2]:pb-2
-          [&>h2]:border-b [&>h2]:border-[var(--color-border)]
-          [&>p]:break-inside-avoid
-          [&>ul]:break-inside-avoid-column
-          [&>blockquote]:break-inside-avoid
-          [&>hr]:column-span-all [&>hr]:my-6
-        ">
-          <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex, rehypeSlug]}>
-            {digest.content}
-          </ReactMarkdown>
-        </div>
+        {/* Spotlight — full width hero */}
+        {spotlight && (
+          <section className="mb-12 p-6 md:p-8 border border-[var(--color-border)] rounded-xl bg-[var(--color-surface)]/40">
+            <div className="prose max-w-none
+              prose-h2:text-xl prose-h2:font-bold prose-h2:mt-0 prose-h2:mb-6 prose-h2:text-[var(--color-text)]
+              prose-li:text-[var(--color-text)] prose-li:leading-relaxed prose-li:mb-3 prose-li:tracking-wide
+              prose-p:leading-relaxed prose-p:tracking-wide
+              [&>ul]:space-y-3
+              [&_blockquote]:text-xs [&_blockquote]:text-[var(--color-text-muted)] [&_blockquote]:border-l-0 [&_blockquote]:pl-0 [&_blockquote]:mt-1 [&_blockquote]:mb-0 [&_blockquote]:italic
+            ">
+              <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex, rehypeSlug]}>
+                {spotlight}
+              </ReactMarkdown>
+            </div>
+          </section>
+        )}
 
-        {/* Sources */}
+        {/* Section boxes — 2-col grid on desktop, 1-col on mobile */}
+        {sections.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+            {sections.map((sec, i) => (
+              <section
+                key={i}
+                className="p-5 md:p-6 border border-[var(--color-border)] rounded-xl bg-[var(--color-surface)]/30 hover:border-[var(--color-primary)]/30 transition-colors"
+              >
+                <div className="prose prose-sm max-w-none
+                  prose-h2:text-base prose-h2:font-bold prose-h2:mt-0 prose-h2:mb-4 prose-h2:pb-3 prose-h2:border-b prose-h2:border-[var(--color-border)] prose-h2:text-[var(--color-text)]
+                  prose-h3:text-sm prose-h3:font-semibold prose-h3:text-[var(--color-text-muted)] prose-h3:mb-3
+                  prose-li:text-[var(--color-text)] prose-li:leading-relaxed prose-li:mb-2 prose-li:tracking-wide
+                  prose-p:leading-relaxed prose-p:tracking-wide
+                  [&>ul]:space-y-1
+                  [&_blockquote]:text-[11px] [&_blockquote]:text-[var(--color-text-muted)] [&_blockquote]:border-l-0 [&_blockquote]:pl-0 [&_blockquote]:mt-1 [&_blockquote]:mb-0 [&_blockquote]:opacity-70
+                  [&_blockquote_a]:text-[var(--color-primary)]
+                ">
+                  <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex, rehypeSlug]}>
+                    {sec}
+                  </ReactMarkdown>
+                </div>
+              </section>
+            ))}
+          </div>
+        )}
+
+        {/* Divider */}
+        {digest.source_urls && <div className="mt-12 pt-4 border-t border-[var(--color-border)]" />}
+
+        {/* Sources — compact grid */}
         {digest.source_urls && (() => {
           try {
             const urls: string[] = JSON.parse(digest.source_urls)
             if (!urls.length) return null
             return (
-              <div className="mt-10 pt-4 border-t border-[var(--color-border)]">
+              <div className="mt-4">
                 <h3 className="text-xs text-[var(--color-text-muted)] tracking-[0.2em] mb-2">来源</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-1">
                   {urls.map((url, i) => (
                     <a key={i} href={url} target="_blank" rel="noopener noreferrer"
-                      className="text-[10px] text-[var(--color-text-muted)] hover:text-[var(--color-primary)] truncate transition-colors">
-                      {url}
+                      className="text-[11px] text-[var(--color-text-muted)] hover:text-[var(--color-primary)] truncate transition-colors block">
+                      {url.replace(/^https?:\/\//, '').slice(0, 50)}
                     </a>
                   ))}
                 </div>
