@@ -52,20 +52,23 @@ export function CommentSection({ postId }: { postId: number }) {
         </div>
       </div>
 
-      {user ? (
-        <CommentForm
-          postId={postId}
-          placeholder="发表评论..."
-          onSubmit={fetchComments}
-          replyTarget={replyTarget}
-          onCancelReply={() => setReplyTarget(null)}
-        />
-      ) : (
+      {!user && (
         <div className="mb-6 py-4 px-4 bg-[var(--color-surface)] rounded-lg border border-[var(--color-border)] text-center">
           <p className="text-[var(--color-text-muted)] text-sm">
             <Link to="/login" className="text-[var(--color-primary)] hover:underline">登录</Link> 后发表评论
           </p>
         </div>
+      )}
+
+      {/* New comment form — only when not replying */}
+      {user && !replyTarget && (
+        <CommentForm
+          postId={postId}
+          placeholder="发表评论..."
+          onSubmit={fetchComments}
+          replyTarget={null}
+          onCancelReply={() => {}}
+        />
       )}
 
       <div className="space-y-0">
@@ -74,7 +77,9 @@ export function CommentSection({ postId }: { postId: number }) {
             key={c.id}
             comment={c}
             postId={postId}
+            replyTarget={replyTarget}
             onReply={(id, name) => setReplyTarget({ id, name })}
+            onCancelReply={() => setReplyTarget(null)}
             onRefresh={fetchComments}
           />
         ))}
@@ -83,15 +88,18 @@ export function CommentSection({ postId }: { postId: number }) {
   )
 }
 
-function CommentItem({ comment, postId, onReply, onRefresh }: {
+function CommentItem({ comment, postId, replyTarget, onReply, onCancelReply, onRefresh }: {
   comment: Comment
   postId: number
+  replyTarget: { id: number; name: string } | null
   onReply: (id: number, name: string) => void
+  onCancelReply: () => void
   onRefresh: () => void
 }) {
   const [showReplies, setShowReplies] = useState(false)
   const [allReplies, setAllReplies] = useState<Comment[]>([])
   const { user } = useAuth()
+  const isReplying = replyTarget?.id === comment.id
 
   const handleLike = async () => {
     if (!user) return
@@ -172,6 +180,19 @@ function CommentItem({ comment, postId, onReply, onRefresh }: {
                   </div>
                 </div>
               ))}
+            </div>
+          )}
+
+          {/* Inline reply form — appears below this comment */}
+          {isReplying && user && (
+            <div className="mt-3 ml-4">
+              <CommentForm
+                postId={postId}
+                placeholder={`回复 @${replyTarget!.name}...`}
+                onSubmit={() => { onCancelReply(); onRefresh() }}
+                replyTarget={replyTarget}
+                onCancelReply={onCancelReply}
+              />
             </div>
           )}
         </div>
