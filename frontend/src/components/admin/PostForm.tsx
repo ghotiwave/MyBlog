@@ -87,14 +87,6 @@ export function PostForm({ post }: Props) {
         value={tags}
         onChange={(e) => setTags(e.target.value)}
       />
-      <div className="flex items-center gap-4">
-        <label className="flex items-center gap-2 text-sm text-[var(--color-text)]">
-          <input type="radio" value="blog" checked={postType === 'blog'} onChange={() => setPostType('blog')} /> 博客
-        </label>
-        <label className="flex items-center gap-2 text-sm text-[var(--color-text)]">
-          <input type="radio" value="note" checked={postType === 'note'} onChange={() => setPostType('note')} /> 笔记
-        </label>
-      </div>
       <div>
         <label className="block text-sm font-medium text-[var(--color-text)] mb-1">封面图片</label>
         <div className="flex gap-2">
