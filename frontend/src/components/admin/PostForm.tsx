@@ -72,39 +72,39 @@ export function PostForm({ post }: Props) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4 max-w-3xl">
       <Input
-        placeholder="Title"
+        placeholder="标题"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         required
       />
       <Input
-        placeholder="Summary"
+        placeholder="摘要"
         value={summary}
         onChange={(e) => setSummary(e.target.value)}
       />
       <Input
-        placeholder="Tags (comma-separated, e.g. #tech,#aigc,#python)"
+        placeholder="标签（用逗号分隔，如 #技术,#AI,#Python）"
         value={tags}
         onChange={(e) => setTags(e.target.value)}
       />
       <div className="flex items-center gap-4">
-        <label className="flex items-center gap-2 text-sm">
-          <input type="radio" value="blog" checked={postType === 'blog'} onChange={() => setPostType('blog')} /> Blog
+        <label className="flex items-center gap-2 text-sm text-[var(--color-text)]">
+          <input type="radio" value="blog" checked={postType === 'blog'} onChange={() => setPostType('blog')} /> 博客
         </label>
-        <label className="flex items-center gap-2 text-sm">
-          <input type="radio" value="note" checked={postType === 'note'} onChange={() => setPostType('note')} /> Note
+        <label className="flex items-center gap-2 text-sm text-[var(--color-text)]">
+          <input type="radio" value="note" checked={postType === 'note'} onChange={() => setPostType('note')} /> 笔记
         </label>
       </div>
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Cover Image</label>
+        <label className="block text-sm font-medium text-[var(--color-text)] mb-1">封面图片</label>
         <div className="flex gap-2">
           <Input
-            placeholder="Image URL or upload"
+            placeholder="图片链接或上传"
             value={coverImage}
             onChange={(e) => setCoverImage(e.target.value)}
           />
-          <label className="px-4 py-2 bg-gray-200 rounded-lg text-sm cursor-pointer hover:bg-gray-300">
-            {imageUploading ? 'Uploading...' : 'Upload'}
+          <label className="px-4 py-2 bg-[var(--color-border)] rounded-lg text-sm cursor-pointer hover:bg-[var(--color-text-muted)] text-[var(--color-text)]">
+            {imageUploading ? '上传中...' : '上传'}
             <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
           </label>
         </div>
@@ -114,7 +114,7 @@ export function PostForm({ post }: Props) {
       </div>
       <div>
         <div className="flex items-center justify-between mb-1">
-          <label className="text-sm font-medium text-gray-700">Content</label>
+          <label className="text-sm font-medium text-[var(--color-text)]">正文</label>
           <button
             type="button"
             onClick={() => setPreview(!preview)}
@@ -136,7 +136,7 @@ export function PostForm({ post }: Props) {
         ) : (
           <>
             <Textarea
-              placeholder="Content (Markdown supported)"
+              placeholder="正文（支持 Markdown）"
               value={content}
               onChange={(e) => setContent(e.target.value)}
               className="min-h-[300px]"
@@ -182,21 +182,21 @@ export function PostForm({ post }: Props) {
           </>
         )}
       </div>
-      <label className="flex items-center gap-2 text-sm">
+      <label className="flex items-center gap-2 text-sm text-[var(--color-text)]">
         <input
           type="checkbox"
           checked={published}
           onChange={(e) => setPublished(e.target.checked)}
           className="rounded"
         />
-        Publish
+        发布
       </label>
       <div className="flex gap-3">
         <Button type="submit" disabled={saving}>
-          {saving ? 'Saving...' : post ? 'Update Post' : 'Create Post'}
+          {saving ? '保存中...' : post ? '更新文章' : '创建文章'}
         </Button>
         <Button variant="secondary" onClick={() => navigate('/admin/posts')}>
-          Cancel
+          取消
         </Button>
       </div>
     </form>

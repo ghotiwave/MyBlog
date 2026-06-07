@@ -16,10 +16,10 @@ export function Game() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Dino Runner</h1>
+        <h1 className="text-2xl font-bold text-[var(--color-text)]">小恐龙快跑</h1>
         {!user && (
           <Link to="/login">
-            <Button size="sm">Login to save scores</Button>
+            <Button size="sm">登录保存成绩</Button>
           </Link>
         )}
       </div>
@@ -31,23 +31,23 @@ export function Game() {
       </div>
 
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold text-gray-900">Leaderboard Top 5</h2>
+        <h2 className="text-lg font-semibold text-[var(--color-text)]">排行榜 Top 5</h2>
         <Link to="/leaderboard">
           <Button variant="ghost" size="sm">查看全部</Button>
         </Link>
       </div>
 
       {top5.length === 0 ? (
-        <p className="text-gray-400 text-sm">No scores yet. Be the first!</p>
+        <p className="text-[var(--color-text-muted)] text-sm">暂无成绩，快来挑战吧！</p>
       ) : (
         <div className="space-y-2">
           {top5.map((s, i) => (
-            <div key={s.id} className="flex items-center gap-3 bg-white rounded-lg border border-gray-200 px-4 py-2">
-              <span className={`font-bold text-sm w-6 ${i === 0 ? 'text-yellow-500' : i === 1 ? 'text-gray-400' : i === 2 ? 'text-amber-600' : 'text-gray-400'}`}>
+            <div key={s.id} className="flex items-center gap-3 bg-[var(--color-surface)] rounded-lg border border-[var(--color-border)] px-4 py-2">
+              <span className={`font-bold text-sm w-6 ${i === 0 ? 'text-yellow-500' : i === 1 ? 'text-gray-400' : i === 2 ? 'text-amber-600' : 'text-[var(--color-text-muted)]'}`}>
                 #{i + 1}
               </span>
-              <span className="flex-1 text-sm font-medium text-gray-900">{s.username}</span>
-              <span className="text-sm font-mono font-bold text-gray-700">{s.score.toLocaleString()}</span>
+              <span className="flex-1 text-sm font-medium text-[var(--color-text)]">{s.username}</span>
+              <span className="text-sm font-mono font-bold text-[var(--color-text)]">{s.score.toLocaleString()}</span>
             </div>
           ))}
         </div>

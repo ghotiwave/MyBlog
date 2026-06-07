@@ -17,23 +17,23 @@ export function PostManage() {
   useEffect(() => { fetchPosts() }, [])
 
   const handleDelete = async (id: number) => {
-    if (!confirm('Delete this post?')) return
+    if (!confirm('确定删除这篇文章？')) return
     await api.delete(`/admin/posts/${id}`)
     fetchPosts()
   }
 
-  if (loading) return <div className="text-center text-gray-400 py-12">Loading...</div>
+  if (loading) return <div className="text-center text-[var(--color-text-muted)] py-12">加载中...</div>
 
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Posts</h1>
+        <h1 className="text-2xl font-bold text-[var(--color-text)]">文章管理</h1>
         <Link to="/admin/posts/new">
-          <Button>New Post</Button>
+          <Button>新文章</Button>
         </Link>
       </div>
       {posts.length === 0 ? (
-        <p className="text-gray-400 text-center py-12">No posts yet.</p>
+        <p className="text-[var(--color-text-muted)] text-center py-12">暂无文章</p>
       ) : (
         <PostTable posts={posts} onDelete={handleDelete} />
       )}

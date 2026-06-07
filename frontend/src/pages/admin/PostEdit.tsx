@@ -16,12 +16,12 @@ export function PostEdit() {
     }
   }, [id])
 
-  if (loading) return <div className="text-center text-gray-400 py-12">Loading...</div>
+  if (loading) return <div className="text-center text-[var(--color-text-muted)] py-12">加载中...</div>
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-8">
-        {post ? 'Edit Post' : 'New Post'}
+      <h1 className="text-2xl font-bold text-[var(--color-text)] mb-8">
+        {post ? '编辑文章' : '新文章'}
       </h1>
       <PostForm post={post} />
     </div>

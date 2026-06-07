@@ -11,34 +11,34 @@ export function AdminUsers() {
   useEffect(() => { fetchUsers() }, [])
 
   const handleDelete = async (id: number) => {
-    if (!confirm('Delete this user?')) return
+    if (!confirm('确定删除该用户？')) return
     try {
       await api.delete(`/admin/users/${id}`)
       fetchUsers()
     } catch (e: any) {
-      alert(e?.response?.data?.detail || 'Failed')
+      alert(e?.response?.data?.detail || '操作失败')
     }
   }
 
-  if (loading) return <div className="text-center text-gray-400 py-12">Loading...</div>
+  if (loading) return <div className="text-center text-[var(--color-text-muted)] py-12">加载中...</div>
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Users</h1>
+      <h1 className="text-2xl font-bold text-[var(--color-text)] mb-6">用户管理</h1>
       <div className="space-y-2">
         {users.map((u) => (
-          <div key={u.id} className="flex items-center justify-between bg-white rounded-lg border border-gray-200 px-4 py-3">
+          <div key={u.id} className="flex items-center justify-between bg-[var(--color-surface)] rounded-lg border border-[var(--color-border)] px-4 py-3">
             <div className="flex items-center gap-4">
-              <span className="font-medium text-sm">{u.username}</span>
-              <span className={`text-xs px-2 py-0.5 rounded-full ${u.role === 'admin' ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'}`}>
-                {u.role}
+              <span className="font-medium text-sm text-[var(--color-text)]">{u.username}</span>
+              <span className={`text-xs px-2 py-0.5 rounded-full ${u.role === 'admin' ? 'bg-red-500/10 text-red-400' : 'bg-blue-500/10 text-blue-400'}`}>
+                {u.role === 'admin' ? '管理员' : '用户'}
               </span>
             </div>
             <div className="flex items-center gap-4">
-              <span className="text-xs text-gray-400">{new Date(u.created_at).toLocaleDateString('zh-CN')}</span>
+              <span className="text-xs text-[var(--color-text-muted)]">{new Date(u.created_at).toLocaleDateString('zh-CN')}</span>
               {u.role !== 'admin' && (
-                <button onClick={() => handleDelete(u.id)} className="text-xs text-red-500 hover:text-red-700 cursor-pointer">
-                  Delete
+                <button onClick={() => handleDelete(u.id)} className="text-xs text-red-400 hover:text-red-500 cursor-pointer">
+                  删除
                 </button>
               )}
             </div>

@@ -14,9 +14,9 @@ export function Dashboard() {
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+        <h1 className="text-2xl font-bold text-[var(--color-text)]">控制面板</h1>
         <Link to="/admin/posts/new">
-          <Button>New Post</Button>
+          <Button>新文章</Button>
         </Link>
       </div>
       <DashboardStats stats={stats} />
