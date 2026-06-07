@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import api from '@/services/api'
 import { Input } from '@/components/ui/Input'
 import { MarkdownRenderer } from '@/components/blog/MarkdownRenderer'
+import { EmojiPicker } from '@/components/blog/EmojiPicker'
 import { Textarea } from '@/components/ui/Textarea'
 import { Button } from '@/components/ui/Button'
 
@@ -14,8 +15,10 @@ export function ProfileEdit() {
   const [twitterUrl, setTwitterUrl] = useState('')
   const [qq, setQq] = useState('')
   const [douyin, setDouyin] = useState('')
+  const [aboutPage, setAboutPage] = useState('')
   const [saving, setSaving] = useState(false)
   const [msg, setMsg] = useState('')
+  const [uploading, setUploading] = useState(false)
 
   useEffect(() => {
     api.get('/admin/profile').then((res) => {
@@ -28,13 +31,37 @@ export function ProfileEdit() {
       setTwitterUrl(p.twitter_url || '')
       setQq(p.qq || '')
       setDouyin(p.douyin || '')
+      setAboutPage(p.about_page || '')
     })
   }, [])
+
+  const insertAtCursor = (text: string) => {
+    const el = document.getElementById('about-page-textarea') as HTMLTextAreaElement | null
+    if (el) {
+      const s = el.selectionStart; const e = el.selectionEnd
+      setAboutPage(aboutPage.slice(0, s) + text + aboutPage.slice(e))
+      requestAnimationFrame(() => { el.focus(); el.setSelectionRange(s + text.length, s + text.length) })
+    } else {
+      setAboutPage((prev) => prev + text)
+    }
+  }
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]; if (!file) return
+    setUploading(true)
+    const form = new FormData(); form.append('file', file)
+    try {
+      const token = localStorage.getItem('token')
+      const res = await fetch('/api/admin/upload', { method: 'POST', headers: { Authorization: `Bearer ${token}` }, body: form })
+      const data = await res.json()
+      if (data.url) insertAtCursor(`![](${data.url})`)
+    } finally { setUploading(false) }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSaving(true)
-    await api.put('/admin/profile', { name, bio, interests, experience, github_url: githubUrl, twitter_url: twitterUrl, qq, douyin })
+    await api.put('/admin/profile', { name, bio, interests, experience, github_url: githubUrl, twitter_url: twitterUrl, qq, douyin, about_page: aboutPage })
     setSaving(false)
     setMsg('保存成功')
     setTimeout(() => setMsg(''), 2000)
@@ -62,6 +89,32 @@ export function ProfileEdit() {
         <Input placeholder="Twitter 链接" value={twitterUrl} onChange={(e) => setTwitterUrl(e.target.value)} />
         <Input placeholder="QQ 号" value={qq} onChange={(e) => setQq(e.target.value)} />
         <Input placeholder="抖音号" value={douyin} onChange={(e) => setDouyin(e.target.value)} />
+
+        {/* About page editor */}
+        <div className="border-t border-[var(--color-border)] pt-4">
+          <label className="text-sm font-medium text-[var(--color-text)] block mb-2">关于页面</label>
+          <Textarea
+            id="about-page-textarea"
+            placeholder="编辑「关于本站」页面内容（支持 Markdown）"
+            value={aboutPage}
+            onChange={(e) => setAboutPage(e.target.value)}
+            className="min-h-[200px]"
+          />
+          <div className="flex items-center gap-3 text-xs text-[var(--color-text-muted)] mt-2">
+            <EmojiPicker onSelect={(text) => insertAtCursor(text)} />
+            <label className={`cursor-pointer hover:text-[var(--color-primary)] transition-colors ${uploading ? 'opacity-50' : ''}`}>
+              {uploading ? '⏳ 上传中...' : '🖼️ 插入图片'}
+              <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+            </label>
+            <span>支持 Markdown / 图片 / 表情</span>
+          </div>
+          {aboutPage && (
+            <div className="mt-3 p-4 rounded border border-[var(--color-border)]/50 bg-[var(--color-surface)]/30 text-sm prose max-w-none prose-a:text-[var(--color-primary)]">
+              <MarkdownRenderer>{aboutPage}</MarkdownRenderer>
+            </div>
+          )}
+        </div>
+
         <div className="flex items-center gap-3">
           <Button type="submit" disabled={saving}>{saving ? '保存中...' : '保存'}</Button>
           {msg && <span className="text-sm text-green-500">{msg}</span>}

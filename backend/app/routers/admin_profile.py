@@ -21,6 +21,7 @@ def _serialize(p):
         twitter_url=p.twitter_url,
         qq=p.qq,
         douyin=p.douyin,
+        about_page=p.about_page,
         updated_at=p.updated_at.isoformat() if p.updated_at else "",
     )
 

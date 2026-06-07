@@ -11,6 +11,7 @@ class ProfileUpdate(BaseModel):
     twitter_url: str | None = None
     qq: str | None = None
     douyin: str | None = None
+    about_page: str | None = None
 
 
 class ProfileResponse(BaseModel):
@@ -24,6 +25,7 @@ class ProfileResponse(BaseModel):
     twitter_url: str | None = None
     qq: str | None = None
     douyin: str | None = None
+    about_page: str | None = None
     updated_at: str
 
     model_config = {"from_attributes": True}
