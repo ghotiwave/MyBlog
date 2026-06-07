@@ -9,6 +9,7 @@ class ProfileUpdate(BaseModel):
     experience: str | None = None
     github_url: str | None = None
     twitter_url: str | None = None
+    qq: str | None = None
 
 
 class ProfileResponse(BaseModel):
@@ -20,6 +21,7 @@ class ProfileResponse(BaseModel):
     experience: str | None = None
     github_url: str | None = None
     twitter_url: str | None = None
+    qq: str | None = None
     updated_at: str
 
     model_config = {"from_attributes": True}

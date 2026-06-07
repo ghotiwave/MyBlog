@@ -19,6 +19,7 @@ def _serialize(p):
         experience=p.experience,
         github_url=p.github_url,
         twitter_url=p.twitter_url,
+        qq=p.qq,
         updated_at=p.updated_at.isoformat() if p.updated_at else "",
     )
 

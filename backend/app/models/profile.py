@@ -14,6 +14,7 @@ class Profile(Base):
     experience = Column(Text, nullable=True)
     github_url = Column(String(500), nullable=True)
     twitter_url = Column(String(500), nullable=True)
+    qq = Column(String(50), nullable=True)
     updated_at = Column(
         DateTime,
         default=lambda: datetime.now(timezone.utc),
