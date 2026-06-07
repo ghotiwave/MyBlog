@@ -31,7 +31,7 @@ export function Login() {
     <div className="max-w-sm mx-auto pt-12">
       <Card>
         <CardContent>
-          <h1 className="text-2xl font-bold text-center mb-6 text-stone-800">登录</h1>
+          <h1 className="text-2xl font-bold text-center mb-6 text-[var(--color-text)]">登录</h1>
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input placeholder="用户名" value={username} onChange={(e) => setUsername(e.target.value)} required />
             <Input type="password" placeholder="密码" value={password} onChange={(e) => setPassword(e.target.value)} required />

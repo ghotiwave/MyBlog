@@ -54,7 +54,7 @@ export function Register() {
     <div className="max-w-sm mx-auto pt-12">
       <Card>
         <CardContent>
-          <h1 className="text-2xl text-[var(--color-text)] text-center mb-6 font-normal">注册</h1>
+          <h1 className="text-2xl font-bold text-center mb-6 text-[var(--color-text)]">注册</h1>
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input placeholder="用户名" value={username} onChange={(e) => setUsername(e.target.value)} required />
             <Input type="email" placeholder="邮箱" value={email} onChange={(e) => setEmail(e.target.value)} required />
