@@ -177,13 +177,25 @@ function CommentItem({ comment, postId, replyTarget, onReply, onCancelReply, onR
                       </MarkdownRenderer>
                     </div>
                     <button onClick={() => onReply(r.id, r.author_name)} className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-primary)] cursor-pointer mt-1">回复</button>
+                    {/* Inline form for replying to this reply */}
+                    {replyTarget?.id === r.id && user && (
+                      <div className="mt-2">
+                        <CommentForm
+                          postId={postId}
+                          placeholder={`回复 @${r.author_name}...`}
+                          onSubmit={() => { onCancelReply(); onRefresh() }}
+                          replyTarget={replyTarget}
+                          onCancelReply={onCancelReply}
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
             </div>
           )}
 
-          {/* Inline reply form — appears below this comment */}
+          {/* Inline reply form — appears below root comment */}
           {isReplying && user && (
             <div className="mt-3 ml-4">
               <CommentForm
