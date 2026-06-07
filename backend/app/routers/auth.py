@@ -1,4 +1,5 @@
 import secrets
+import re
 import time
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import HTMLResponse
@@ -17,6 +18,24 @@ router = APIRouter(prefix="/api/auth", tags=["auth"])
 
 # Simple in-memory rate limiter
 _register_attempts: dict[str, list[float]] = {}
+
+
+def _validate_username(username: str):
+    if len(username) < 1 or len(username) > 10:
+        raise HTTPException(status_code=422, detail="用户名长度需在 1-10 位之间")
+    if re.search(r'[一-鿿]', username):
+        raise HTTPException(status_code=422, detail="用户名不允许包含中文字符")
+    if re.search(r'[<>\"\';&|`$(){}]', username):
+        raise HTTPException(status_code=422, detail="用户名包含非法字符")
+    return username.strip()
+
+
+def _validate_password(password: str):
+    if len(password) < 4 or len(password) > 12:
+        raise HTTPException(status_code=422, detail="密码长度需在 4-12 位之间")
+    if re.search(r'[一-鿿]', password):
+        raise HTTPException(status_code=422, detail="密码不允许包含中文字符")
+    return password
 
 
 def _check_rate_limit(ip: str, max_attempts: int = 3, window: int = 3600) -> bool:
@@ -54,6 +73,9 @@ def user_to_response(user: User) -> dict:
 @router.post("/register")
 async def register(request: Request, req: RegisterRequest, db: Session = Depends(get_db)):
     client_ip = request.client.host if request.client else "unknown"
+
+    _validate_username(req.username)
+    _validate_password(req.password)
 
     # Rate limit: 3 per hour per IP
     if not _check_rate_limit(client_ip):

@@ -29,7 +29,17 @@ export function AdminUsers() {
         {users.map((u) => (
           <div key={u.id} className="flex items-center justify-between bg-[var(--color-surface)] rounded-lg border border-[var(--color-border)] px-4 py-3">
             <div className="flex items-center gap-4">
-              <span className="font-medium text-sm text-[var(--color-text)]">{u.username}</span>
+              {u.avatar_url ? (
+                <img src={u.avatar_url} alt="" className="w-8 h-8 rounded-full object-cover border border-[var(--color-border)]" />
+              ) : (
+                <div className="w-8 h-8 rounded-full bg-[var(--color-bg)] border border-[var(--color-border)] flex items-center justify-center text-xs text-[var(--color-text-muted)]">
+                  {u.username[0]}
+                </div>
+              )}
+              <div>
+                <span className="font-medium text-sm text-[var(--color-text)]">{u.username}</span>
+                {u.signature && <p className="text-[10px] text-[var(--color-text-muted)] truncate max-w-[200px]">{u.signature}</p>}
+              </div>
               <span className={`text-xs px-2 py-0.5 rounded-full ${u.role === 'admin' ? 'bg-red-500/10 text-red-400' : 'bg-blue-500/10 text-blue-400'}`}>
                 {u.role === 'admin' ? '管理员' : '用户'}
               </span>

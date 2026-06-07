@@ -66,7 +66,7 @@ def delete_comment(comment_id: int, db: Session = Depends(get_db), _: User = Dep
 @router.get("/users")
 def list_users(db: Session = Depends(get_db), _: User = Depends(get_current_admin)):
     users = db.query(User).order_by(User.created_at.desc()).all()
-    return [{"id": u.id, "username": u.username, "role": u.role, "created_at": u.created_at.isoformat() if u.created_at else ""} for u in users]
+    return [{"id": u.id, "username": u.username, "role": u.role, "avatar_url": u.avatar_url, "signature": u.signature, "created_at": u.created_at.isoformat() if u.created_at else ""} for u in users]
 
 
 @router.delete("/users/{user_id}")
