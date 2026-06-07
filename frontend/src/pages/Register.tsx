@@ -56,9 +56,9 @@ export function Register() {
         <CardContent>
           <h1 className="text-2xl font-bold text-center mb-6 text-[var(--color-text)]">注册</h1>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <Input placeholder="用户名" value={username} onChange={(e) => setUsername(e.target.value)} required />
+            <Input placeholder="用户名（1-10位，不含中文）" value={username} onChange={(e) => setUsername(e.target.value)} maxLength={10} required />
             <Input type="email" placeholder="邮箱" value={email} onChange={(e) => setEmail(e.target.value)} required />
-            <Input type="password" placeholder="密码" value={password} onChange={(e) => setPassword(e.target.value)} required />
+            <Input type="password" placeholder="密码（4-12位，不含中文）" value={password} onChange={(e) => setPassword(e.target.value)} minLength={4} maxLength={12} required />
             {TURNSTILE_SITE_KEY && <div ref={turnstileDivRef} className="flex justify-center" />}
             {error && <p className="text-sm text-red-500">{error}</p>}
             {verifyUrl && (
