@@ -60,7 +60,7 @@ export function Digest() {
       ) : (
         <div>
           {digests.map((d) => (
-            <Link key={d.id} to={`/digest/${d.id}`} className="block py-3 border-b border-[var(--color-border)]/60 hover:bg-[var(--color-surface)]/50 transition-colors px-2 -mx-2">
+            <Link key={d.id} to={`/digest/${d.slug || d.id}`} className="block py-3 border-b border-[var(--color-border)]/60 hover:bg-[var(--color-surface)]/50 transition-colors px-2 -mx-2">
               <div className="flex items-center justify-between">
                 <h3 className="text-base text-[var(--color-text)] hover:text-[var(--color-primary)] transition-colors font-normal">{d.title}</h3>
                 <span className="text-xs text-[var(--color-text-muted)] shrink-0 ml-4">

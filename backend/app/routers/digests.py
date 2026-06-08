@@ -33,6 +33,7 @@ def list_digests(
             topic=d.topic,
             content=d.content,
             source_urls=d.source_urls,
+            slug=d.slug,
             created_at=d.created_at.isoformat() if d.created_at else "",
         )
         for d in digests
@@ -63,8 +64,11 @@ def latest_digest(db: Session = Depends(get_db)):
 
 
 @router.get("/{digest_id}", response_model=DigestResponse)
-def get_digest(digest_id: int, db: Session = Depends(get_db)):
-    d = db.query(NewsDigest).get(digest_id)
+def get_digest(digest_id: str, db: Session = Depends(get_db)):
+    try:
+        d = db.query(NewsDigest).get(int(digest_id))
+    except ValueError:
+        d = db.query(NewsDigest).filter(NewsDigest.slug == digest_id).first()
     if not d:
         from fastapi import HTTPException
         raise HTTPException(status_code=404, detail="Digest not found")

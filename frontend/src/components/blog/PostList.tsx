@@ -77,6 +77,7 @@ export function PostList({ postType }: { postType?: string }) {
             <PostCard
               key={p.id}
               id={p.id}
+              slug={p.slug}
               title={p.title}
               summary={p.summary}
               coverImage={p.cover_image}

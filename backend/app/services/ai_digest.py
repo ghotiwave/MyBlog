@@ -73,6 +73,7 @@ def generate_daily_digest(db: Session) -> NewsDigest:
         topic="综合",
         content=content,
         source_urls=json.dumps([item["url"] for item in news_items]),
+        slug=today_str,
     )
     db.add(digest)
     db.commit()

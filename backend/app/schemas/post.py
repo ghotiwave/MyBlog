@@ -29,6 +29,7 @@ class PostResponse(BaseModel):
     cover_image: str | None = None
     tags: str | None = None
     post_type: str = "blog"
+    slug: str | None = None
     published: bool
     created_at: str
     updated_at: str
@@ -46,6 +47,7 @@ class PostListItem(BaseModel):
     cover_image: str | None = None
     tags: str | None = None
     post_type: str = "blog"
+    slug: str | None = None
     published: bool
     created_at: str
     like_count: int = 0

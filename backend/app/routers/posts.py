@@ -49,6 +49,7 @@ def list_posts(
                 cover_image=p.cover_image,
                 tags=p.tags,
                 post_type=p.post_type or "blog",
+                slug=p.slug,
                 published=p.published,
                 created_at=p.created_at.isoformat() if p.created_at else "",
                 like_count=like_count or 0,
@@ -66,8 +67,12 @@ def list_posts(
 
 
 @router.get("/{post_id}", response_model=PostResponse)
-def get_post(post_id: int, db: Session = Depends(get_db)):
-    post = db.query(Post).filter(Post.id == post_id, Post.published == True).first()
+def get_post(post_id: str, db: Session = Depends(get_db)):
+    try:
+        pid = int(post_id)
+        post = db.query(Post).filter(Post.id == pid, Post.published == True).first()
+    except ValueError:
+        post = db.query(Post).filter(Post.slug == post_id, Post.published == True).first()
     if not post:
         from fastapi import HTTPException
         raise HTTPException(status_code=404, detail="Post not found")
@@ -81,6 +86,7 @@ def get_post(post_id: int, db: Session = Depends(get_db)):
         cover_image=post.cover_image,
         tags=post.tags,
         post_type=post.post_type or "blog",
+        slug=post.slug,
         published=post.published,
         created_at=post.created_at.isoformat() if post.created_at else "",
         updated_at=post.updated_at.isoformat() if post.updated_at else "",

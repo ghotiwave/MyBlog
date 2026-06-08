@@ -44,13 +44,13 @@ export function ArticleLayout({ content, prevPost, nextPost, children }: Props) 
           <h4 className="text-sm text-[var(--color-text-muted)] tracking-wider mb-3 uppercase">导航</h4>
           <div className="space-y-3">
             {prevPost ? (
-              <Link to={`/blog/${prevPost.id}`} className="block group">
+              <Link to={`/blog/${prevPost.slug || prevPost.id}`} className="block group">
                 <span className="text-[10px] text-[var(--color-text-muted)]">← Previous</span>
                 <p className="text-base text-[var(--color-text)] group-hover:text-[var(--color-primary)] transition-colors mt-0.5 line-clamp-3">{prevPost.title}</p>
               </Link>
             ) : <p className="text-xs text-[var(--color-text-muted)]">第一篇</p>}
             {nextPost ? (
-              <Link to={`/blog/${nextPost.id}`} className="block group">
+              <Link to={`/blog/${nextPost.slug || nextPost.id}`} className="block group">
                 <span className="text-[10px] text-[var(--color-text-muted)]">Next →</span>
                 <p className="text-base text-[var(--color-text)] group-hover:text-[var(--color-primary)] transition-colors mt-0.5 line-clamp-3">{nextPost.title}</p>
               </Link>

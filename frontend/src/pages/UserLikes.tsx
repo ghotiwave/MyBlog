@@ -20,7 +20,7 @@ export function UserLikes() {
       ) : (
         <div>
           {items.map((item, i) => (
-            <Link key={i} to={`/blog/${item.post_id}`} className="block group py-3 border-b border-[var(--color-border)] hover:bg-[var(--color-surface)] transition-colors px-2 -mx-2 rounded">
+            <Link key={i} to={`/blog/${item.slug || item.post_id}`} className="block group py-3 border-b border-[var(--color-border)] hover:bg-[var(--color-surface)] transition-colors px-2 -mx-2 rounded">
               <h3 className="text-[var(--color-text)] group-hover:text-[var(--color-primary)] transition-colors">❤️ {item.title}</h3>
               <span className="text-xs text-[var(--color-text-muted)] italic">{new Date(item.created_at).toLocaleDateString('zh-CN')}</span>
             </Link>

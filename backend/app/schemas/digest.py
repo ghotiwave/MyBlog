@@ -7,6 +7,7 @@ class DigestResponse(BaseModel):
     topic: str
     content: str
     source_urls: str | None = None
+    slug: str | None = None
     created_at: str
 
     model_config = {"from_attributes": True}

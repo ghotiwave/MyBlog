@@ -11,4 +11,5 @@ class NewsDigest(Base):
     topic = Column(String(100), default="综合")
     content = Column(Text, nullable=False)
     source_urls = Column(Text, nullable=True)  # JSON array of URLs
+    slug = Column(String(200), nullable=True, unique=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))

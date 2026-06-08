@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 
 interface Props {
   id: number
+  slug?: string | null
   title: string
   summary: string | null
   coverImage: string | null
@@ -14,11 +15,11 @@ interface Props {
   onTagClick?: (tag: string) => void
 }
 
-export function PostCard({ id, title, summary, coverImage, tags, createdAt, commentCount, likeCount = 0, viewCount = 0, activeTag, onTagClick }: Props) {
+export function PostCard({ id, slug, title, summary, coverImage, tags, createdAt, commentCount, likeCount = 0, viewCount = 0, activeTag, onTagClick }: Props) {
   const tagList = (tags || '').split(',').map((t) => t.trim()).filter(Boolean)
 
   return (
-    <Link to={`/blog/${id}`} className="block group py-5 border-b border-[var(--color-border)]/60 hover:bg-[var(--color-surface)]/50 transition-colors px-2 -mx-2">
+    <Link to={`/blog/${slug || id}`} className="block group py-5 border-b border-[var(--color-border)]/60 hover:bg-[var(--color-surface)]/50 transition-colors px-2 -mx-2">
       <div className="flex gap-5">
         {coverImage && (
           <img src={coverImage} alt={title} className="w-24 h-24 object-cover rounded flex-shrink-0" />
