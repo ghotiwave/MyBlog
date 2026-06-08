@@ -9,12 +9,16 @@ from app.dependencies import get_current_admin
 router = APIRouter(prefix="/api/admin/profile", tags=["admin-profile"])
 
 
-def _serialize(p):
+def _serialize(p, db=None):
+    avatar = p.avatar_url
+    if not avatar and db:
+        admin = db.query(User).filter(User.role == "admin").first()
+        avatar = admin.avatar_url if admin else None
     return ProfileResponse(
         id=p.id,
         name=p.name,
         bio=p.bio,
-        avatar_url=p.avatar_url,
+        avatar_url=avatar,
         interests=p.interests,
         experience=p.experience,
         github_url=p.github_url,
@@ -35,7 +39,7 @@ def get_profile(db: Session = Depends(get_db), _: User = Depends(get_current_adm
         db.add(profile)
         db.commit()
         db.refresh(profile)
-    return _serialize(profile)
+    return _serialize(profile, db)
 
 
 @router.put("", response_model=ProfileResponse)
@@ -48,4 +52,4 @@ def update_profile(req: ProfileUpdate, db: Session = Depends(get_db), _: User = 
         setattr(profile, k, v)
     db.commit()
     db.refresh(profile)
-    return _serialize(profile)
+    return _serialize(profile, db)

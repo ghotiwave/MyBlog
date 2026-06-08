@@ -2,17 +2,24 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.profile import Profile
+from app.models.user import User
 from app.schemas.profile import ProfileResponse
 
 router = APIRouter(prefix="/api/profile", tags=["profile"])
 
 
-def _serialize(p):
+def _serialize(p, db: Session):
+    # Use admin user's avatar if profile avatar is not set
+    avatar = p.avatar_url
+    if not avatar:
+        admin = db.query(User).filter(User.role == "admin").first()
+        avatar = admin.avatar_url if admin else None
+
     return ProfileResponse(
         id=p.id,
         name=p.name,
         bio=p.bio,
-        avatar_url=p.avatar_url,
+        avatar_url=avatar,
         interests=p.interests,
         experience=p.experience,
         github_url=p.github_url,
@@ -33,4 +40,4 @@ def get_profile(db: Session = Depends(get_db)):
         db.add(profile)
         db.commit()
         db.refresh(profile)
-    return _serialize(profile)
+    return _serialize(profile, db)
