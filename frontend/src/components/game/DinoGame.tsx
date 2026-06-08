@@ -37,7 +37,9 @@ export function DinoGame() {
       runner.config.INVERT_FADE_DURATION = 3000
 
       pollRef.current = window.setInterval(() => {
-        const score = Math.ceil(runner.distanceRan || 0)
+        // Read the actual displayed score from the distance meter
+        const dm = runner.distanceMeter
+        const score = dm?.digits ? parseInt(dm.digits.join(''), 10) : Math.floor(runner.distanceRan * 0.025)
         if (runner.crashed && score > 0 && !scoreRef.current.submitted) {
           submitScore(score)
           scoreRef.current.last = score
