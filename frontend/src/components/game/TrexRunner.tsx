@@ -15,16 +15,6 @@ export function TrexRunner() {
     if (!container || initRef.current) return
     initRef.current = true
 
-    // Clear any previous game elements from strict mode double-mount
-    const existing = container.querySelector('.interstitial-wrapper')
-    if (existing) {
-      container.innerHTML = ''
-    }
-    // Also remove any body-inserted elements from previous init
-    document.querySelectorAll('#offline-resources').forEach(el => {
-      if (el.parentElement && el.parentElement.id !== 'root') el.remove()
-    })
-
     try {
       const runner = initRunnerFn('#trex-container')
       runnerRef.current = runner
