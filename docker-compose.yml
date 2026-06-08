@@ -23,8 +23,9 @@ services:
       dockerfile: Dockerfile
     ports:
       - "80:80"
-    volumes:
-      - ../notes/public:/usr/share/nginx/notes:ro
+    # 笔记站（可选）：如不需要，注释掉下一行
+    # volumes:
+    #   - ../notes/public:/usr/share/nginx/notes:ro
     depends_on:
       - backend
     restart: unless-stopped
