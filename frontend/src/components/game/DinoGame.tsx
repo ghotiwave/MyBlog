@@ -81,10 +81,10 @@ export function DinoGame() {
   }, [])
 
   return (
-    <div className="w-full max-w-[900px] mx-auto overflow-hidden bg-white select-none" onClick={handleWrapperClick}>
-      <div ref={containerRef} style={{ minWidth: 600, minHeight: 200 }} />
-      <p className="text-center text-xs text-gray-400 mt-2">
-        Click here then press Space to start
+    <div className="w-full max-w-[900px] mx-auto bg-white select-none rounded-lg overflow-hidden border border-[var(--color-border)]" onClick={handleWrapperClick}>
+      <div ref={containerRef} className="flex justify-center" style={{ height: 204 }} />
+      <p className="text-center text-xs text-[var(--color-text-muted)] py-2 bg-[var(--color-surface)]/50">
+        点击游戏区域后按空格键开始
       </p>
     </div>
   )
