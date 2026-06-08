@@ -31,29 +31,27 @@ export function PostDetail() {
 
   useEffect(() => {
     api.get(`/posts/${id}`).then((res) => {
-      setPost(res.data)
-      setLikeCount(res.data.like_count || 0)
-    }).finally(() => setLoading(false))
+      const p = res.data
+      setPost(p)
+      setLikeCount(p.like_count || 0)
+      setLoading(false)
 
-    // Fetch adjacent posts (no type filter - get all published)
-    api.get('/posts', { params: { page_size: 50 } }).then((res) => {
-      const posts = res.data.items
-      const idx = posts.findIndex((p: any) => p.id === Number(id))
-      if (idx >= 0) {
-        setAdjacent({ prev: posts[idx + 1] || null, next: posts[idx - 1] || null })
-      }
-    })
+      // Adjacent posts
+      api.get('/posts', { params: { page_size: 50 } }).then((r) => {
+        const posts = r.data.items
+        const idx = posts.findIndex((x: any) => x.id === p.id)
+        if (idx >= 0) setAdjacent({ prev: posts[idx + 1] || null, next: posts[idx - 1] || null })
+      })
 
-    if (user && id) {
-      api.post(`/posts/${id}/view`).catch(() => {})
-    }
+      if (user) api.post(`/posts/${p.id}/view`).catch(() => {})
+    }).catch(() => setLoading(false))
   }, [id, user])
 
   const toggleLike = async () => {
-    if (!user || likeLoading) return
+    if (!user || likeLoading || !post) return
     setLikeLoading(true)
     try {
-      const res = await api.post(`/posts/${id}/like`)
+      const res = await api.post(`/posts/${post.id}/like`)
       setLiked(res.data.liked)
       setLikeCount(res.data.like_count)
     } finally {
