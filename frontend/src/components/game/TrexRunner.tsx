@@ -37,13 +37,7 @@ export function TrexRunner() {
       }
     }, 500)
 
-    return () => {
-      clearInterval(poll)
-      if (runnerRef.current?.destroy) {
-        runnerRef.current.destroy()
-        runnerRef.current = null
-      }
-    }
+    return () => { clearInterval(poll) }
   }, [user])
 
   return (
