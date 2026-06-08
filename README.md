@@ -127,6 +127,13 @@ export const siteConfig = {
   shortName: '简写',         // 导航栏和页脚显示的短名
   description: '你的标语',    // 首页副标题
   wikiName: '你的Wiki名',    // 笔记站名称（没有就不管）
+
+  // 不需要的功能改成 false，对应页面和导航链接会消失
+  features: {
+    notes: true,    // 笔记站
+    digest: true,   // AI 日报
+    game: true,     // 小恐龙游戏
+  },
 }
 ```
 
