@@ -6,14 +6,24 @@ import initRunnerFn from 't-rex-runner/dist/runner.js'
 export function TrexRunner() {
   const containerRef = useRef<HTMLDivElement>(null)
   const runnerRef = useRef<any>(null)
+  const initRef = useRef(false)
   const { user } = useAuth()
   const submittedRef = useRef(false)
 
   useEffect(() => {
     const container = containerRef.current
-    if (!container) return
-    // Prevent double-init in React strict mode
-    if (container.querySelector('.interstitial-wrapper')) return
+    if (!container || initRef.current) return
+    initRef.current = true
+
+    // Clear any previous game elements from strict mode double-mount
+    const existing = container.querySelector('.interstitial-wrapper')
+    if (existing) {
+      container.innerHTML = ''
+    }
+    // Also remove any body-inserted elements from previous init
+    document.querySelectorAll('#offline-resources').forEach(el => {
+      if (el.parentElement && el.parentElement.id !== 'root') el.remove()
+    })
 
     try {
       const runner = initRunnerFn('#trex-container')
@@ -26,7 +36,6 @@ export function TrexRunner() {
     const poll = setInterval(() => {
       const r = runnerRef.current
       if (!r) return
-      // Read score from the game's internal distanceMeter
       const dm = r.distanceMeter || r._distanceMeter
       const digits = dm?.digits
       const score = digits ? parseInt(digits.join(''), 10) : 0
@@ -38,7 +47,13 @@ export function TrexRunner() {
       }
     }, 500)
 
-    return () => { clearInterval(poll) }
+    return () => {
+      clearInterval(poll)
+      if (runnerRef.current?.destroy) {
+        runnerRef.current.destroy()
+        runnerRef.current = null
+      }
+    }
   }, [user])
 
   return (
