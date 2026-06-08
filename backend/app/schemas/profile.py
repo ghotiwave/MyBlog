@@ -12,6 +12,7 @@ class ProfileUpdate(BaseModel):
     qq: str | None = None
     douyin: str | None = None
     about_page: str | None = None
+    email_public: str | None = None
 
 
 class ProfileResponse(BaseModel):
@@ -26,6 +27,7 @@ class ProfileResponse(BaseModel):
     qq: str | None = None
     douyin: str | None = None
     about_page: str | None = None
+    email_public: str | None = None
     updated_at: str
 
     model_config = {"from_attributes": True}

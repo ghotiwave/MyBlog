@@ -17,6 +17,7 @@ class Profile(Base):
     qq = Column(String(50), nullable=True)
     douyin = Column(String(500), nullable=True)
     about_page = Column(Text, nullable=True)
+    email_public = Column(String(200), nullable=True)
     updated_at = Column(
         DateTime,
         default=lambda: datetime.now(timezone.utc),

@@ -16,6 +16,7 @@ export function ProfileEdit() {
   const [qq, setQq] = useState('')
   const [douyin, setDouyin] = useState('')
   const [aboutPage, setAboutPage] = useState('')
+  const [emailPublic, setEmailPublic] = useState('')
   const [saving, setSaving] = useState(false)
   const [msg, setMsg] = useState('')
   const [uploading, setUploading] = useState(false)
@@ -32,6 +33,7 @@ export function ProfileEdit() {
       setQq(p.qq || '')
       setDouyin(p.douyin || '')
       setAboutPage(p.about_page || '')
+      setEmailPublic(p.email_public || '')
     })
   }, [])
 
@@ -61,7 +63,7 @@ export function ProfileEdit() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSaving(true)
-    await api.put('/admin/profile', { name, bio, interests, experience, github_url: githubUrl, twitter_url: twitterUrl, qq, douyin, about_page: aboutPage })
+    await api.put('/admin/profile', { name, bio, interests, experience, github_url: githubUrl, twitter_url: twitterUrl, qq, douyin, about_page: aboutPage, email_public: emailPublic })
     setSaving(false)
     setMsg('保存成功')
     setTimeout(() => setMsg(''), 2000)
@@ -89,6 +91,7 @@ export function ProfileEdit() {
         <Input placeholder="Twitter 链接" value={twitterUrl} onChange={(e) => setTwitterUrl(e.target.value)} />
         <Input placeholder="QQ 号" value={qq} onChange={(e) => setQq(e.target.value)} />
         <Input placeholder="抖音号" value={douyin} onChange={(e) => setDouyin(e.target.value)} />
+        <Input placeholder="公开邮箱（展示在首页）" value={emailPublic} onChange={(e) => setEmailPublic(e.target.value)} />
 
         {/* About page editor */}
         <div className="border-t border-[var(--color-border)] pt-4">

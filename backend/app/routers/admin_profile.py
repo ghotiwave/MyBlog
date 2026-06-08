@@ -22,6 +22,7 @@ def _serialize(p):
         qq=p.qq,
         douyin=p.douyin,
         about_page=p.about_page,
+        email_public=p.email_public,
         updated_at=p.updated_at.isoformat() if p.updated_at else "",
     )
 
