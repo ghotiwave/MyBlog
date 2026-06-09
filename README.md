@@ -82,7 +82,7 @@ npm install
 npm run dev
 ```
 
-前端：http://localhost:5173（自动代理 `/api` 到 8000 端口）
+前端：http://localhost:5173 （自动代理 `/api` 到 8000 端口）
 
 ### 启动笔记站（可选）
 
