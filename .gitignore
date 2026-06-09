@@ -3,6 +3,8 @@ __pycache__/
 *.pyc
 .env
 *.db
+# Auto-generated assets
+frontend/src/assets/logo-sm.png
 data/
 uploads/
 dist/
