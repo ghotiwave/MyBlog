@@ -20,7 +20,7 @@ def scheduled_digest_job():
         db.close()
 
 
-scheduler = BackgroundScheduler()
+scheduler = BackgroundScheduler(timezone="Asia/Shanghai")
 scheduler.add_job(scheduled_digest_job, "cron", hour=8, minute=0)
 
 
